@@ -61,7 +61,7 @@
         // firebase.messaging().requestPermission().then(() => { });
         // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
         // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
+        firebase.analytics().logEvent('hola analytics!');
         // firebase.performance(); // call to activate
         //
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
@@ -69,15 +69,15 @@
         try {
           let app = firebase.app();
           let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
+            // 'auth', 
+            // 'database', 
+            // 'firestore',
+            // 'functions',
+            // 'messaging', 
+            // 'storage', 
             'analytics', 
             'remoteConfig',
-            'performance',
+            // 'performance',
           ].filter(feature => typeof app[feature] === 'function');
           loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
         } catch (e) {
