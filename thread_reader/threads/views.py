@@ -19,8 +19,14 @@ def home(request):
 
     return render(request, 'threads/home.html', {'form': form})
 
+# links para probar:
+# https://twitter.com/VideoArtGame/status/1548668846050988032
+# https://twitter.com/VideoArtGame/status/1548668846050988032?s=20&t=ddJrMfddkleybcG2dZqU-g
+
 def extractId(url):
-    return re.search(r"\d{19}", url).group()
+    rx_url = r"^(?:[^\/]*\/){5}([^\/]*)"            #regex para links copiados de la barra de url
+    rx_btn = r"^(?:[^\/]*\/){5}([^\/]*.+?(?=\?))"   #regex para links copiados con "copy link to tweet" (tienen un '?')
+    return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
 def thread(request, id):
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
