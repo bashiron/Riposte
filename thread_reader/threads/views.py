@@ -5,7 +5,6 @@ from django.shortcuts import render
 import requests, os, json, re
 import environ
 from .forms import LinkForm
-from pdb import set_trace
 
 env = environ.Env()
 
@@ -26,5 +25,4 @@ def extractId(url):
 def thread(request, id):
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     res = requests.get('https://api.twitter.com/2/tweets/', params={'ids': str(id)}, headers=heads)
-    # set_trace()
     return render(request, 'threads/thread.html', {'response': res})
