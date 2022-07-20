@@ -1,1 +1,16 @@
-<h3>{{ response.text }}</h3>
+{% comment %} <h1 style="color: orange">{{ response.includes.users.0.name }}</h1>
+<p style="color: blue">{{ response.data.text }}</p>
+<p style="color: grey">{{ response.data.created_at }}</p> {% endcomment %}
+<article class="media content-section">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="#">{{ response.includes.users.0.name }}</a>
+            <small class="text-muted">{{ response.data.created_at }}</small>
+        </div>
+        <h2>
+            {% comment %} <a class="article-title" href="#">titulo</a> {% endcomment %}
+            <p class="article-title">titulo</p>
+        </h2>
+        <p class="article-content">{{ response.data.text }}</p>
+    </div>
+</article>
