@@ -4,12 +4,8 @@ body {
     margin-top: 5rem;
   }
   
-  /* h1, h2, h3, h4, h5, h6 {
-    color: #444444;
-  } */
-
-  h1 {
-    color: aquamarine;
+  h1, h2, h3, h4, h5, h6 {
+    color: #1dc723;
   }
   
   ul {
@@ -35,14 +31,17 @@ body {
   .content-section {
     background: #ffffff;
     padding: 10px 20px;
-    border: 1px solid #dddddd;
+    border: 5px dashed coral;
     border-radius: 3px;
     margin-bottom: 20px;
   }
+
+  .media-body {
+    text-align: center;
+  }
   
   .article-title {
-    /* color: #444444; */
-    color: blueviolet;
+    color: #28d4b4;
   }
   
   a.article-title:hover {
