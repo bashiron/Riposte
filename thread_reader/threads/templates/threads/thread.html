@@ -1,16 +1,28 @@
 {% extends 'threads/base.html' %}
 {% block content %}
-    <article class="media content-section">
-        <div class="media-body">
+    <div class="d-flex flex-row justify-content-center">
+        <article class="content-section">
             <div class="article-metadata">
-                <a class="mr-2" href="#">{{ response.includes.users.0.name }}</a>
-                <small class="text-muted">{{ response.data.created_at }}</small>
+                <a id="username"
+                   class="mr-2"
+                   href="https://twitter.com/{{ response.includes.users.0.username }}">{{ response.includes.users.0.name }}</a>
             </div>
-            <h2>
-                {% comment %} <a class="article-title" href="#">titulo</a> {% endcomment %}
-                <p class="article-title">titulo</p>
-            </h2>
             <p class="article-content">{{ response.data.text }}</p>
+            <small class="text-muted">
+                <a href="https://twitter.com/{{ response.includes.users.0.username }}/status/{{ response.data.id }}">{{ response.data.created_at }}</a>
+            </small>
+        </article>
+    </div>
+    <div id="separador"></div>
+    <div class="container w-100">
+        <div class="row">
+            <div class="col">1 of 2</div>
+            <div class="col">2 of 2</div>
         </div>
-    </article>
+        <div class="row">
+            <div class="col">1 of 3</div>
+            <div class="col">2 of 3</div>
+            <div class="col">3 of 3</div>
+        </div>
+    </div>
 {% endblock content %}

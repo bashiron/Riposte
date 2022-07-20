@@ -29,7 +29,8 @@ def extractId(url):
     return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
 def thread(request, id):
+    url = f'https://api.twitter.com/2/tweets/{str(id)}'
     payload = {'tweet.fields': 'created_at,attachments', 'expansions': 'author_id'}
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
-    res = requests.get(f'https://api.twitter.com/2/tweets/{str(id)}', params=payload, headers=heads)
+    res = requests.get(url, params=payload, headers=heads)
     return render(request, 'threads/thread.html', {'response': res.json()})
