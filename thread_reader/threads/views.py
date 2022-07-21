@@ -1,3 +1,4 @@
+from multiprocessing import context
 from urllib import response
 from wsgiref import headers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -32,5 +33,17 @@ def thread(request, id):
     url = f'https://api.twitter.com/2/tweets/{str(id)}'
     payload = {'tweet.fields': 'created_at,attachments', 'expansions': 'author_id'}
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
-    res = requests.get(url, params=payload, headers=heads)
-    return render(request, 'threads/thread.html', {'response': res.json()})
+    res = requests.get(url, params=payload, headers=heads).json()
+    return render(request, 'threads/thread.html', fillContext({}, res))
+
+def fillContext(ctx, res):
+    ctx['name'] = res['includes']['users'][0]['name']
+    ctx['username'] = res['includes']['users'][0]['username']
+    ctx['text'] = res['data']['text']
+    ctx['id'] = res['data']['id']
+    ctx['date'] = trimDate(res['data']['created_at'])
+    return ctx
+
+def trimDate(date):
+    rx = r".+?(?=T)"
+    return re.search(rx, date).group(0)
