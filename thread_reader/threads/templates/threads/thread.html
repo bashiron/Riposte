@@ -1,28 +1,23 @@
-{% extends 'threads/base.html' %}
-{% block content %}
-    <div class="d-flex flex-row justify-content-center">
-        <article class="content-section">
-            <div class="article-metadata">
-                <a id="username"
-                   class="mr-2"
-                   href="https://twitter.com/{{ username }}">{{ name }}</a>
-            </div>
-            <p class="article-content">{{ text }}</p>
-            <small class="text-muted">
-                <a href="https://twitter.com/{{ username }}/status/{{ id }}">{{ date }}</a>
-            </small>
-        </article>
-    </div>
-    <div id="separador"></div>
+{% extends 'threads/tweet.html' %}
+{% block thread %}
     <div class="container w-100">
         <div class="row">
-            <div class="col">1 of 2</div>
-            <div class="col">2 of 2</div>
-        </div>
-        <div class="row">
-            <div class="col">1 of 3</div>
-            <div class="col">2 of 3</div>
-            <div class="col">3 of 3</div>
+            {% for tw in tweets %}
+                <div class="col">
+                    <article class="content-section">
+                        <div class="article-metadata">
+                            {% comment %} aca hay que mostrar el nombre pero por ahora muestro el id {% endcomment %}
+                            <p id="username" class="mr-2">{{ tw.id }}</p> 
+                        </div>
+                        <p class="article-content">{{ tw.text }}</p>
+                    </article>
+                </div>
+            {% endfor %}
+            {% comment %} aca esta el boton que carga mas tweets en la conversacion {% endcomment %}
+            <a class="load-more btn btn-primary btn-lg" id="more" href="#"></a>
         </div>
     </div>
-{% endblock content %}
+    {% comment %} <div class="article-metadata">
+            <a class="username mr-2" href="">icono de enlace</a>
+    </div> {% endcomment %}
+{% endblock thread %}

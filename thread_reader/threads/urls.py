@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('thread/<int:id>/', views.thread, name='thread')
+    path('tweet/<int:id>/', views.tweet, name='tweet'),
+    path('thread/<int:id>/', views.thread, name="thread")
 ]

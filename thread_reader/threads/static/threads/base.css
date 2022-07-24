@@ -17,7 +17,7 @@ body {
     margin-top: 10px;
   }
 
-  #username {
+  #top-username {
     padding-bottom: 1px;
     margin-bottom: 4px;
     border-bottom: 1px solid rgb(90, 153, 155);
@@ -45,4 +45,9 @@ body {
 
   .container .row .col{
     border: 1px solid black;
+  }
+
+  .load-more {
+    height: 30px;
+    width: 30px;
   }
