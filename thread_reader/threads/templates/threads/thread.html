@@ -7,7 +7,7 @@
                     <article class="content-section">
                         <div class="article-metadata">
                             {% comment %} aca hay que mostrar el nombre pero por ahora muestro el id {% endcomment %}
-                            <p id="username" class="mr-2">{{ tw.id }}</p> 
+                            <p id="username" class="mr-2">{{ tw.id }}</p>
                         </div>
                         <p class="article-content">{{ tw.text }}</p>
                     </article>
@@ -17,6 +17,27 @@
             <a class="load-more btn btn-primary btn-lg" id="more" href="#"></a>
         </div>
     </div>
+    <script type="text/javascript">
+        $('#more').click(function(){
+            var tok,conv;
+            tok = '{{ token }}';
+            conv = '{{ base.id }}';
+            $.ajax(
+                {
+                    type: 'GET',
+                    url: '{% url "more" %}',
+                    data:{
+                        token: tok,
+                        conv_id: conv
+                    },
+                    success: function(res){
+                        console.log(res);
+                        res.data.forEach(reply => console.log(reply));
+                    }
+                }
+            )
+        });
+    </script>
     {% comment %} <div class="article-metadata">
             <a class="username mr-2" href="">icono de enlace</a>
     </div> {% endcomment %}

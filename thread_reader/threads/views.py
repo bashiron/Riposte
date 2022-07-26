@@ -1,7 +1,7 @@
 from multiprocessing import context
 from urllib import response
 from wsgiref import headers
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import requests, os, json, re
 import environ
@@ -54,6 +54,8 @@ def trim_date(date):
     rx = r".+?(?=T)"
     return re.search(rx, date).group(0)
 
+#TODO HACER UNA EXCEPTION SI EL TWEET ES MAS ANTIGUO QUE UNA SEMANA
+#TODO AGREGAR EL "TO:" AL QUERY PARA QUE SOLO HAYAN RESPUESTAS DIRECTAS AL TWEET ORIGINAL
 def thread(request, id):
     url = 'https://api.twitter.com/2/tweets/search/recent'
     payload = {'query': f'conversation_id:{str(id)}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
@@ -69,7 +71,14 @@ def fill_thread_context(ctx, res):
 
 #mas respuestas en un thread
 def expand_thread(request):
-    pass
+    token = request.GET['token']
+    conv_id = request.GET['conv_id']
+    url = 'https://api.twitter.com/2/tweets/search/recent'
+    payload = {'query': f'conversation_id:{conv_id}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username', 'next_token': token}
+    heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+    res = requests.get(url, params=payload, headers=heads).json()
+    return JsonResponse(res)
+
 
 #el thread de una respuesta
 def new_thread(request):
