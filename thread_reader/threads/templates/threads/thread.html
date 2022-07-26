@@ -1,12 +1,13 @@
 {% extends 'threads/tweet.html' %}
 {% block thread %}
     <div class="container w-100">
-        <div class="row">
+        <div id="lvl-1" class="row">
             {% for tw in tweets %}
                 <div class="col">
                     <article class="content-section">
                         <div class="article-metadata">
                             {% comment %} aca hay que mostrar el nombre pero por ahora muestro el id {% endcomment %}
+                            {% comment %} QUITAR EL ID porque estoy en un loop y los IDs son unicos se supone {% endcomment %}
                             <p id="username" class="mr-2">{{ tw.id }}</p>
                         </div>
                         <p class="article-content">{{ tw.text }}</p>
@@ -19,9 +20,8 @@
     </div>
     <script type="text/javascript">
         $('#more').click(function(){
-            var tok,conv;
-            tok = '{{ token }}';
-            conv = '{{ base.id }}';
+            const tok = '{{ token }}';
+            const conv = '{{ base.id }}';
             $.ajax(
                 {
                     type: 'GET',
@@ -31,8 +31,34 @@
                         conv_id: conv
                     },
                     success: function(res){
+                        const row = $('#lvl-1');
+                        const items = [];
                         console.log(res);
-                        res.data.forEach(reply => console.log(reply));
+                        for (let i = 0; i<res.data.length; i++) {
+                            const parrafo_meta = $( '<p/>', {
+                                id: 'username',
+                                'class': 'mr-2',
+                                html: res.data[i].id
+                            } );
+                            const metadata = $( '<div/>', {
+                                'class': 'article-metadata',
+                                html: parrafo_meta
+                            } );
+                            const parrafo_cont = $( '<p/>', {
+                                'class': 'article-content',
+                                html: res.data[i].text
+                            } );
+                            const articulo = $( '<article/>', {
+                                'class': 'content-section',
+                                html: [metadata, parrafo_cont]
+                            } );
+                            const reply = $( '<div/>', {
+                                'class': 'col',
+                                html: articulo
+                            } );
+                            items.push(reply);
+                        }
+                        row.append(items);
                     }
                 }
             )
