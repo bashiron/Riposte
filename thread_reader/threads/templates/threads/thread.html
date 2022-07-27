@@ -1,17 +1,15 @@
 {% extends 'threads/tweet.html' %}
 {% block thread %}
-    <div class="container w-100">
-        <div id="lvl-1" class="row" data-conv="{{ base.id }}" data-user="{{ aux.user_id }}">
+    <div class="container mw-100">
+        <div id="lvl-1" class="fila" data-conv="{{ base.id }}" data-user="{{ aux.user_id }}">
             {% for tw in tweets %}
-                <div class="col">
                     <article class="content-section">
                         <div class="article-metadata">
-                            <p class="user-name mr-2">{{ tw.name }}</p>
-                            <a href="https://twitter.com/{{ tw.username }}/status/{{ tw.id }}" target="_blank">link</a>
+                            <p class="user-name">{{ tw.name }}</p>
                         </div>
-                        <p class="article-content">{{ tw.text }}</p>
+                        <div class="article-content">{{ tw.text }}</div>
+                        <a href="https://twitter.com/{{ tw.username }}/status/{{ tw.id }}" target="_blank">link</a>
                     </article>
-                </div>
             {% endfor %}
             {% if token %}
                 <a class="load-more btn btn-primary btn-lg" id="more" data-token="{{ token }}"></a>

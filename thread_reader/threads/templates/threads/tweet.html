@@ -1,21 +1,22 @@
 {% extends 'threads/base.html' %}
 {% block content %}
-    <div class="d-flex flex-row justify-content-center">
-        <article class="content-section">
+    <div class="base-tweet d-flex flex-row justify-content-center">
+        <article class="content-section w-25">
             <div class="article-metadata">
                 <a id="top-username"
                    class="mr-2"
                    href="https://twitter.com/{{ base.username }}"
-                   target="_blank">
-                   {{ base.name }} </a>
+                   target="_blank">{{ base.name }}</a>
             </div>
             <p class="article-content">{{ base.text }}</p>
-            <small class="text-muted">
-                <a href="https://twitter.com/{{ base.username }}/status/{{ base.id }}" target="_blank">{{ base.date }}</a>
-            </small>
+            <div class="text-muted">
+                <a href="https://twitter.com/{{ base.username }}/status/{{ base.id }}"
+                   target="_blank">{{ base.date }}</a>
+            </div>
         </article>
     </div>
     <div id="separador"></div>
     <a href="{% url 'thread' base.id %}">Cargar respuestas</a>
-    {% block thread %}{% endblock thread %}
+    {% block thread %}
+    {% endblock thread %}
 {% endblock content %}

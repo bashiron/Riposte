@@ -1,53 +1,101 @@
 body {
-    background: #fafafa;
-    color: #333333;
-    margin-top: 5rem;
-  }
-    
-  .content-section {
-    background: rgb(174, 216, 217);
-    padding: 10px 20px;
-    border: 5px solid rgb(154, 225, 226);
-    border-radius: 3px;
-    width: 750px;
-  }
-    
-  .article-content {
-    white-space: pre-line;
-    margin-top: 10px;
-  }
+  background: #fafafa;
+  color: #333333;
+  margin-top: 5rem;
+}
 
-  #top-username {
-    padding-bottom: 1px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid rgb(90, 153, 155);
-    color: #2d5fa7;
-    text-decoration: none;
-  }
+.fila {
+  overflow: auto;
+  white-space: nowrap;
+  height: 250px;
+}
 
-  .user-name:hover {
-    color: #617ea7;
-  }
+.base-tweet .content-section {
+  height: 260px;
+}
 
-  .text-muted a {
-    color: #2d5fa7;
-    text-decoration: none;
-  }
+.content-section {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+  white-space: normal;
+  background: rgb(174, 216, 217);
+  padding: 10px 20px;
+  border: 5px solid rgb(154, 225, 226);
+  border-radius: 3px;
+  width: 400px;
+  height: 230px;
+}
 
-  #separador {
-    width: 100px;
-    height: 60px;
-  }
-        
-  .container .row {
-    height: 250px;
-  }
+.article-content {
+  white-space: pre-line;
+  margin-top: 10px;
+  overflow: auto;
+  height: 145px;
+  font-size: larger;
+  font-weight: 400;
+}
 
-  .container .row .col{
-    border: 1px solid black;
-  }
+#top-username {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgb(90, 153, 155);
+  color: #2d5fa7;
+  text-decoration: none;
+  font-size: x-large;
+}
 
-  .load-more {
-    height: 30px;
-    width: 30px;
-  }
+.user-name {
+  font-size: large;
+  cursor: default;
+}
+
+.user-name:hover {
+  color: #617ea7;
+}
+
+.text-muted {
+  text-align: right;
+}
+
+.text-muted a {
+  color: #2d5fa7;
+  text-decoration: none;
+}
+
+#separador {
+  width: 100px;
+  height: 60px;
+}
+
+.load-more {
+  height: 30px;
+  width: 30px;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b9a6df8a;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b9a6dfc2;
+}
+
+.article-content::-webkit-scrollbar-thumb {
+  background-color: #5a9fab94;
+}
+
+.article-content::-webkit-scrollbar-thumb:hover {
+  background-color: #39788394;
+}
