@@ -1,27 +1,23 @@
 {% extends 'threads/tweet.html' %}
 {% block thread %}
     <div class="container w-100">
-        <div id="lvl-1" class="row">
+        <div id="lvl-1" class="row" data-conv="{{ base.id }}" data-user="{{ aux.user_id }}">
             {% for tw in tweets %}
                 <div class="col">
                     <article class="content-section">
                         <div class="article-metadata">
-                            {% comment %} aca hay que mostrar el nombre pero por ahora muestro el id {% endcomment %}
-                            {% comment %} QUITAR EL ID porque estoy en un loop y los IDs son unicos se supone {% endcomment %}
-                            <p id="username" class="mr-2">{{ tw.id }}</p>
+                            <p class="user-name mr-2">{{ tw.name }}</p>
+                            <a href="https://twitter.com/{{ tw.username }}/status/{{ tw.id }}" target="_blank">link</a>
                         </div>
                         <p class="article-content">{{ tw.text }}</p>
                     </article>
                 </div>
             {% endfor %}
             {% if token %}
-                <a class="load-more btn btn-primary btn-lg" id="more" data-token="{{ token }}" data-conv="{{ base.id }}"></a>
+                <a class="load-more btn btn-primary btn-lg" id="more" data-token="{{ token }}"></a>
             {% endif %}
         </div>
     </div>
-    {% comment %} <div class="article-metadata">
-            <a class="username mr-2" href="">icono de enlace</a>
-    </div> {% endcomment %}
     <script type="text/javascript">
         $(document).ready(function () {
             $('#more').click(function () {

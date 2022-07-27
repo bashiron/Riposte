@@ -25,7 +25,7 @@ body {
     text-decoration: none;
   }
 
-  #username:hover {
+  .user-name:hover {
     color: #617ea7;
   }
 

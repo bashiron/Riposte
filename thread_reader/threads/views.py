@@ -1,14 +1,11 @@
-from multiprocessing import context
-from urllib import response
-from wsgiref import headers
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-import requests, os, json, re
+import requests, re
 import environ
 from .forms import LinkForm
 
 env = environ.Env()
-tweet_ctx = {'base': {}}
+tweet_ctx = {'base': {}, 'aux': {}}
 
 def home(request):
     if request.method == 'POST':
@@ -47,6 +44,7 @@ def fill_tweet_context(ctx, res):
     ctx['base']['text'] = res['data']['text']
     ctx['base']['id'] = res['data']['id']
     ctx['base']['date'] = trim_date(res['data']['created_at'])
+    ctx['aux']['user_id'] = res['includes']['users'][0]['id']
     return ctx
 
 
@@ -55,26 +53,38 @@ def trim_date(date):
     return re.search(rx, date).group(0)
 
 #TODO HACER UNA EXCEPTION SI EL TWEET ES MAS ANTIGUO QUE UNA SEMANA
-#TODO AGREGAR EL "TO:" AL QUERY PARA QUE SOLO HAYAN RESPUESTAS DIRECTAS AL TWEET ORIGINAL
 def thread(request, id):
+    user_id = tweet_ctx['aux']['user_id']
     url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{str(id)}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+    payload = {'query': f'conversation_id:{str(id)} to:{user_id}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     res = requests.get(url, params=payload, headers=heads).json()
     return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, res))
 
 def fill_thread_context(ctx, res):
-    ctx['tweets'] = res['data']
+    conjunto = list(zip(res['data'], res['includes']['users']))     #juntamos las dos listas
+    ctx['tweets'] = list(map(merge_tweet_data, conjunto))           #creamos nueva lista con datos obtenidos al iterar sobre el conjunto
     ctx['token'] = res['meta']['next_token']
     return ctx
+
+#esto funciona porque el usuario en posicion n de la segunda lista corresponde al usuario en posicion n que creo el tweet en la primera
+def merge_tweet_data(tupla):
+    return {
+        'text': tupla[0]['text'],
+        'id': tupla[0]['id'],
+        'user_id': tupla[1]['id'],
+        'username': tupla[1]['username'],
+        'name': tupla[1]['name']
+    }
 
 
 #mas respuestas en un thread
 def expand_thread(request):
     token = request.GET['token']
     conv_id = request.GET['conv_id']
+    user_id = request.GET['user_id']
     url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{conv_id}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username', 'next_token': token}
+    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username', 'next_token': token}
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     res = requests.get(url, params=payload, headers=heads).json()
     return JsonResponse(res)
