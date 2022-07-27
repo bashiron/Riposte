@@ -5,11 +5,13 @@
             <div class="article-metadata">
                 <a id="top-username"
                    class="mr-2"
-                   href="https://twitter.com/{{ base.username }}">{{ base.name }}</a>
+                   href="https://twitter.com/{{ base.username }}"
+                   target="_blank">
+                   {{ base.name }} </a>
             </div>
             <p class="article-content">{{ base.text }}</p>
             <small class="text-muted">
-                <a href="https://twitter.com/{{ base.username }}/status/{{ base.id }}">{{ base.date }}</a>
+                <a href="https://twitter.com/{{ base.username }}/status/{{ base.id }}" target="_blank">{{ base.date }}</a>
             </small>
         </article>
     </div>

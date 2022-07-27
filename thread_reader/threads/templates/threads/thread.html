@@ -15,63 +15,18 @@
                 </div>
             {% endfor %}
             {% if token %}
-            <a class="load-more btn btn-primary btn-lg" id="more" data-token="{{token}}" data-conv="{{base.id}}"></a>
+                <a class="load-more btn btn-primary btn-lg" id="more" data-token="{{ token }}" data-conv="{{ base.id }}"></a>
             {% endif %}
         </div>
     </div>
-    <script type="text/javascript">
-        const boton = $('#more');
-        boton.click(function(){
-            const tok = boton.attr('data-token');
-            const conv = boton.attr('data-conv');
-            $.ajax(
-                {
-                    type: 'GET',
-                    url: '{% url "more" %}',
-                    data:{
-                        token: tok,
-                        conv_id: conv
-                    },
-                    success: function(res){
-                        const row = boton.parent();
-                        const items = [];
-                        console.log(res);
-                        for (let i = 0; i<res.data.length; i++) {
-                            const parrafo_meta = $( '<p/>', {
-                                id: 'username',
-                                'class': 'mr-2',
-                                html: res.data[i].id
-                            } );
-                            const metadata = $( '<div/>', {
-                                'class': 'article-metadata',
-                                html: parrafo_meta
-                            } );
-                            const parrafo_cont = $( '<p/>', {
-                                'class': 'article-content',
-                                html: res.data[i].text
-                            } );
-                            const articulo = $( '<article/>', {
-                                'class': 'content-section',
-                                html: [metadata, parrafo_cont]
-                            } );
-                            const reply = $( '<div/>', {
-                                'class': 'col',
-                                html: articulo
-                            } );
-                            items.push(reply);
-                        }
-                        if (res.meta.next_token) {
-                            items.push(boton.attr('data-token', res.meta.next_token));    //actualizo el token y muevo el boton al final de la lista
-                        } else {
-                            boton.remove();
-                        }
-                        row.append(items);
-                    }
-                }
-            )
-        });
-    </script>
     {% comment %} <div class="article-metadata">
             <a class="username mr-2" href="">icono de enlace</a>
     </div> {% endcomment %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#more').click(function () {
+                moreReplies("{% url 'more' %}");
+            })
+        })
+    </script>
 {% endblock thread %}
