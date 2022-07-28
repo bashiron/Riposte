@@ -25,6 +25,7 @@ body {
   border-radius: 3px;
   width: 400px;
   height: 230px;
+  cursor: pointer;
 }
 
 .article-content {

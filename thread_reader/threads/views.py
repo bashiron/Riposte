@@ -35,6 +35,8 @@ def tweet(request, id):
     res = request_tweet(str(id))
     # with open(BASE_DIR / 'threads/json_mocks/fake/long_tweet.json', encoding='utf-8') as mock:
     #     res = json.load(mock)
+    global conv
+    conv = str(id)
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
 def fill_tweet_context(ctx, res):
@@ -57,9 +59,9 @@ def request_tweet(twt_id):
     return requests.get(url, params=payload, headers=heads).json()
 
 #TODO HACER UNA EXCEPTION SI EL TWEET ES MAS ANTIGUO QUE UNA SEMANA
-def thread(request, id):
+def thread(request, id):    #borrar el id mas adelante, ya no se usa
     user_id = tweet_ctx['aux']['user_id']
-    res = request_thread(str(id), user_id)
+    res = request_thread(user_id)
     return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, compose_thread(res)))
 
 def fill_thread_context(ctx, res):
@@ -67,9 +69,9 @@ def fill_thread_context(ctx, res):
     ctx['token'] = res['token']
     return ctx
 
-def request_thread(conv_id, user_id, token=None):
+def request_thread(user_id, token=None):
     url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+    payload = {'query': f'conversation_id:{conv} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
     if (token is not None):
         payload['next_token'] = token
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
@@ -107,14 +109,16 @@ def demention(texto, ents):
 #mas respuestas en un thread
 def expand_thread(request):
     token = request.GET['token']
-    conv_id = request.GET['conv_id']
     user_id = request.GET['user_id']
     # with open(BASE_DIR / 'threads/json_mocks/fake/no_token.json', encoding='utf-8') as mock:
     #     res = json.load(mock)
-    res = request_thread(conv_id, user_id, token)
+    res = request_thread(user_id, token)
     res = compose_thread(res)
     return JsonResponse(res)
 
 #el thread de una respuesta
 def new_thread(request):
-    pass
+    user_id = request.GET['user_id']
+    res = request_thread(user_id)
+    res = compose_thread(res)
+    return JsonResponse(res)
