@@ -4,6 +4,7 @@ function moreReplies(url) {
     const boton = $('#more-n');   //reemplazar n por el numero de boton (depende del nivel)
     const fila = boton.parent();
     const tok = boton.attr('data-token');
+    const twid = fila.attr('data-id');
     const usid = fila.attr('data-user');
     $.ajax(
         {
@@ -11,6 +12,7 @@ function moreReplies(url) {
             url: url,
             data: {
                 token: tok,
+                twid: twid,
                 user_id: usid
             },
             success: function (res) {
@@ -48,6 +50,7 @@ function generateElements(res) {
         });
         const articulo = $('<article/>', {
             'class': 'content-section',
+            'data-id': res.items[i].id,
             'data-user': res.items[i].user_id,
             html: [metadata, parrafo_cont, link]
         });
@@ -58,9 +61,11 @@ function generateElements(res) {
 
 function openThread(reply, url) {
     const container = reply.parent();
+    const twid = reply.attr('data-id')
     const user_id = reply.attr('data-user');
     const fila = $('<div/>', {
         'class': 'fila',
+        'data-id': twid,
         'data-user': user_id
     });
     $.ajax(
@@ -68,6 +73,7 @@ function openThread(reply, url) {
             type: 'GET',
             url: url,
             data: {
+                twid: twid,
                 user_id: user_id
             },
             success: function (res) {

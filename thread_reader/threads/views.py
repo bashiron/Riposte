@@ -62,7 +62,7 @@ def request_tweet(twt_id):
 def thread(request, id):    #borrar el id mas adelante, ya no se usa
     user_id = tweet_ctx['aux']['user_id']
     res = request_thread(user_id)
-    return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, compose_thread(res)))
+    return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, compose_thread(res, conv)))
 
 def fill_thread_context(ctx, res):
     ctx['tweets'] = res['items']
@@ -71,17 +71,17 @@ def fill_thread_context(ctx, res):
 
 def request_thread(user_id, token=None):
     url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{conv} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+    payload = {'query': f'conversation_id:{conv} to:{user_id}', 'tweet.fields': 'referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
     if (token is not None):
         payload['next_token'] = token
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     return requests.get(url, params=payload, headers=heads).json()
 
 #construimos un nuevo json iterando sobre la respuesta
-def compose_thread(res):
-    conjunto = list(zip(res['data'], res['includes']['users']))     #juntamos las dos listas
-    merged = list(map(merge_tweet_data, conjunto))                  #creamos nueva lista con datos obtenidos al iterar sobre el conjunto
-    filtrados = list(filter(None, merged))                          #filtro los None que quedaron en el medio
+def compose_thread(res, twid):
+    conjunto = list(zip(res['data'], res['includes']['users']))         #juntamos las dos listas
+    merged = list(map(lambda c: merge_tweet_data(c, twid), conjunto))   #creamos nueva lista con datos obtenidos al iterar sobre el conjunto. el lambda es para poder enviar un argumento ademas de la lista
+    filtrados = list(filter(None, merged))                              #filtro los None que quedaron en el medio
     try:
         token = res['meta']['next_token']
     except KeyError:
@@ -89,9 +89,9 @@ def compose_thread(res):
     return {'token': token, 'items': filtrados}
 
 #esto funciona porque el usuario en posicion n de la segunda lista corresponde al usuario en posicion n que creo el tweet en la primera
-def merge_tweet_data(tupla):
+def merge_tweet_data(tupla, twid):
     item = None
-    if (tupla[0]['conversation_id'] == tupla[0]['referenced_tweets'][0]['id']):
+    if (twid == tupla[0]['referenced_tweets'][0]['id']):
         item = {
             'text': demention(tupla[0]['text'], tupla[0]['entities']),
             'id': tupla[0]['id'],
@@ -109,16 +109,18 @@ def demention(texto, ents):
 #mas respuestas en un thread
 def expand_thread(request):
     token = request.GET['token']
+    twid = request.GET['twid']
     user_id = request.GET['user_id']
     # with open(BASE_DIR / 'threads/json_mocks/fake/no_token.json', encoding='utf-8') as mock:
     #     res = json.load(mock)
     res = request_thread(user_id, token)
-    res = compose_thread(res)
+    res = compose_thread(res, twid)
     return JsonResponse(res)
 
 #el thread de una respuesta
 def new_thread(request):
+    twid = request.GET['twid']
     user_id = request.GET['user_id']
     res = request_thread(user_id)
-    res = compose_thread(res)
+    res = compose_thread(res, twid)
     return JsonResponse(res)
