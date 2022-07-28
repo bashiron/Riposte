@@ -32,9 +32,9 @@ def extract_id(url):
     return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
 def tweet(request, id):
-    # res = request_tweet(str(id))
-    with open(BASE_DIR / 'threads/json_mocks/fake/long_tweet.json') as mock:
-        res = json.load(mock)
+    res = request_tweet(str(id))
+    # with open(BASE_DIR / 'threads/json_mocks/fake/long_tweet.json') as mock:
+    #     res = json.load(mock)
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
 def fill_tweet_context(ctx, res):
@@ -64,23 +64,27 @@ def thread(request, id):
 
 def fill_thread_context(ctx, res):
     conjunto = list(zip(res['data'], res['includes']['users']))     #juntamos las dos listas
-    ctx['tweets'] = list(map(merge_tweet_data, conjunto))           #creamos nueva lista con datos obtenidos al iterar sobre el conjunto
+    merged = list(map(merge_tweet_data, conjunto))                  #creamos nueva lista con datos obtenidos al iterar sobre el conjunto
+    ctx['tweets'] = list(filter(None, merged))                      #filtro los None que quedaron en el medio
     ctx['token'] = res['meta']['next_token']
     return ctx
 
 #esto funciona porque el usuario en posicion n de la segunda lista corresponde al usuario en posicion n que creo el tweet en la primera
 def merge_tweet_data(tupla):
-    return {
-        'text': tupla[0]['text'],
-        'id': tupla[0]['id'],
-        'user_id': tupla[1]['id'],
-        'username': tupla[1]['username'],
-        'name': tupla[1]['name']
-    }
+    item = None
+    if (tupla[0]['conversation_id'] == tupla[0]['referenced_tweets'][0]['id']):
+        item = {
+            'text': tupla[0]['text'],
+            'id': tupla[0]['id'],
+            'user_id': tupla[1]['id'],
+            'username': tupla[1]['username'],
+            'name': tupla[1]['name']
+        }
+    return item
 
 def request_thread(conv_id, user_id, token=None):
     url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
     if (token): payload['next_token']: token
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     return requests.get(url, params=payload, headers=heads).json()
