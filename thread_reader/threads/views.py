@@ -74,7 +74,7 @@ def merge_tweet_data(tupla):
     item = None
     if (tupla[0]['conversation_id'] == tupla[0]['referenced_tweets'][0]['id']):
         item = {
-            'text': tupla[0]['text'],
+            'text': demention(tupla[0]['text'], tupla[0]['entities']),
             'id': tupla[0]['id'],
             'user_id': tupla[1]['id'],
             'username': tupla[1]['username'],
@@ -82,9 +82,14 @@ def merge_tweet_data(tupla):
         }
     return item
 
+#quita la mencion del texto
+def demention(texto, ents):
+    pos = ents['mentions'][0]['end'] + 1
+    return texto[pos:]
+
 def request_thread(conv_id, user_id, token=None):
     url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
     if (token): payload['next_token']: token
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     return requests.get(url, params=payload, headers=heads).json()
