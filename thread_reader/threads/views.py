@@ -33,7 +33,7 @@ def extract_id(url):
 
 def tweet(request, id):
     res = request_tweet(str(id))
-    # with open(BASE_DIR / 'threads/json_mocks/fake/long_tweet.json') as mock:
+    # with open(BASE_DIR / 'threads/json_mocks/fake/long_tweet.json', encoding='utf-8') as mock:
     #     res = json.load(mock)
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
@@ -60,14 +60,31 @@ def request_tweet(twt_id):
 def thread(request, id):
     user_id = tweet_ctx['aux']['user_id']
     res = request_thread(str(id), user_id)
-    return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, res))
+    return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, compose_thread(res)))
 
 def fill_thread_context(ctx, res):
+    ctx['tweets'] = res['items']
+    ctx['token'] = res['token']
+    return ctx
+
+def request_thread(conv_id, user_id, token=None):
+    url = 'https://api.twitter.com/2/tweets/search/recent'
+    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+    if (token is not None):
+        payload['next_token'] = token
+    heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+    return requests.get(url, params=payload, headers=heads).json()
+
+#construimos un nuevo json iterando sobre la respuesta
+def compose_thread(res):
     conjunto = list(zip(res['data'], res['includes']['users']))     #juntamos las dos listas
     merged = list(map(merge_tweet_data, conjunto))                  #creamos nueva lista con datos obtenidos al iterar sobre el conjunto
-    ctx['tweets'] = list(filter(None, merged))                      #filtro los None que quedaron en el medio
-    ctx['token'] = res['meta']['next_token']
-    return ctx
+    filtrados = list(filter(None, merged))                          #filtro los None que quedaron en el medio
+    try:
+        token = res['meta']['next_token']
+    except KeyError:
+        token = False
+    return {'token': token, 'items': filtrados}
 
 #esto funciona porque el usuario en posicion n de la segunda lista corresponde al usuario en posicion n que creo el tweet en la primera
 def merge_tweet_data(tupla):
@@ -87,19 +104,15 @@ def demention(texto, ents):
     pos = ents['mentions'][0]['end'] + 1
     return texto[pos:]
 
-def request_thread(conv_id, user_id, token=None):
-    url = 'https://api.twitter.com/2/tweets/search/recent'
-    payload = {'query': f'conversation_id:{conv_id} to:{user_id}', 'tweet.fields': 'conversation_id,referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
-    if (token): payload['next_token']: token
-    heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
-    return requests.get(url, params=payload, headers=heads).json()
-
 #mas respuestas en un thread
 def expand_thread(request):
     token = request.GET['token']
     conv_id = request.GET['conv_id']
     user_id = request.GET['user_id']
+    # with open(BASE_DIR / 'threads/json_mocks/fake/no_token.json', encoding='utf-8') as mock:
+    #     res = json.load(mock)
     res = request_thread(conv_id, user_id, token)
+    res = compose_thread(res)
     return JsonResponse(res)
 
 #el thread de una respuesta

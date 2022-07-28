@@ -1,9 +1,11 @@
 function moreReplies(url) {
     const boton = $('#more');
-    const row = boton.parent();
+    const fila = boton.parent();
+    console.log('boton parent:')
+    console.log(fila)
     const tok = boton.attr('data-token');
-    const conv = row.attr('data-conv');
-    const usid = row.attr('data-user');
+    const conv = fila.attr('data-conv');
+    const usid = fila.attr('data-user');
     $.ajax(
         {
             type: 'GET',
@@ -14,42 +16,41 @@ function moreReplies(url) {
                 user_id: usid
             },
             success: function (res) {
-                const items = [];
+                const tweets = [];
+                console.log('res:')
                 console.log(res);
-                for (let i = 0; i < res.data.length; i++) {
+                for (let i = 0; i < res.items.length; i++) {
                     const parrafo_meta = $('<p/>', {
-                        'class': 'user-name mr-2',
-                        html: res.includes.users[i].name
+                        'class': 'user-name',
+                        html: res.items[i].name
                     });
-                    const link_meta = $('<a/>', {
-                        href: `https://twitter.com/${res.includes.users[i].username}/status/${res.data[i].id}`,
+                    const link = $('<a/>', {
+                        href: `https://twitter.com/${res.items[i].username}/status/${res.items[i].id}`,
                         target: '_blank',
                         html: 'link'
                     })
                     const metadata = $('<div/>', {
                         'class': 'article-metadata',
-                        html: [parrafo_meta, link_meta]
+                        html: [parrafo_meta, link]
                     });
-                    const parrafo_cont = $('<p/>', {
+                    const parrafo_cont = $('<div/>', {
                         'class': 'article-content',
-                        html: res.data[i].text
+                        html: res.items[i].text
                     });
                     const articulo = $('<article/>', {
                         'class': 'content-section',
-                        html: [metadata, parrafo_cont]
+                        html: [metadata, parrafo_cont, link]
                     });
-                    const reply = $('<div/>', {
-                        'class': 'col',
-                        html: articulo
-                    });
-                    items.push(reply);
+                    tweets.push(articulo);
                 }
-                if (res.meta.next_token) {
-                    items.push(boton.attr('data-token', res.meta.next_token));    //actualizo el token y muevo el boton al final de la lista
+                if (res.token) {
+                    tweets.push(boton.attr('data-token', res.token));    //actualizo el token y muevo el boton al final de la lista
                 } else {
                     boton.remove();
                 }
-                row.append(items);
+                console.log('tweets:')
+                console.log(tweets)
+                fila.append(tweets);
             }
         }
     )
