@@ -1,22 +1,36 @@
 {% extends 'threads/base.html' %}
 {% block content %}
     <div class="base-tweet d-flex flex-row justify-content-center">
-        <article id="base-tweet" data-conv="{{ base.id }}" class="content-section w-25">
+        <article id="base-tweet" data-conv="{{ id }}" class="content-section w-25">
             <div class="article-metadata">
                 <a id="top-username"
                    class="mr-2"
-                   href="https://twitter.com/{{ base.username }}"
-                   target="_blank">{{ base.name }}</a>
+                   href="https://twitter.com/{{ username }}"
+                   target="_blank">{{ name }}</a>
             </div>
-            <p class="article-content">{{ base.text }}</p>
+            <p class="article-content">{{ text }}</p>
             <div class="text-muted">
-                <a href="https://twitter.com/{{ base.username }}/status/{{ base.id }}"
-                   target="_blank">{{ base.date }}</a>
+                <a href="https://twitter.com/{{ username }}/status/{{ id }}"
+                   target="_blank">{{ date }}</a>
             </div>
         </article>
     </div>
     <div id="separador"></div>
-    <a href="{% url 'thread' base.id %}">Cargar respuestas</a>
+    <div id="cont-threads" class="container mw-100">
+        <div id="lv-0"></div>
+        <div id="lv-1"></div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            storeUrls("{% url 'more' %}", "{% url 'open' %}");
+            art = $('<article/>', {
+                'data-id': '{{id}}',
+                'data-user': '{{aux.user_id}}'
+            });
+            $('#lv-0').append(art);
+            openThread(art);
+        });
+    </script>
     {% block thread %}
     {% endblock thread %}
 {% endblock content %}

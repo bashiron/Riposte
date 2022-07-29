@@ -1,12 +1,12 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from thread_reader.settings import BASE_DIR
-import requests, re, json
+import requests, re
 import environ
 from .forms import LinkForm
 
 env = environ.Env()
-tweet_ctx = {'base': {}, 'aux': {}}
+tweet_ctx = {'aux': {}}
 
 def home(request):
     if request.method == 'POST':
@@ -18,13 +18,6 @@ def home(request):
         form = LinkForm()
 
     return render(request, 'threads/home.html', {'form': form})
-
-# links para probar:
-# https://twitter.com/VideoArtGame/status/1548668846050988032
-# https://twitter.com/VideoArtGame/status/1548668846050988032?s=20&t=ddJrMfddkleybcG2dZqU-g
-# con cuatro imagenes:
-# https://twitter.com/c_o_l_a/status/1546465898848190465
-# https://twitter.com/c_o_l_a/status/1546465898848190465?s=20&t=zI1XMFXtJotfy1RACRLyqg
 
 def extract_id(url):
     rx_url = r"^(?:[^\/]*\/){5}([^\/]*)"            #regex para links copiados de la barra de url
@@ -40,11 +33,11 @@ def tweet(request, id):
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
 def fill_tweet_context(ctx, res):
-    ctx['base']['name'] = res['includes']['users'][0]['name']
-    ctx['base']['username'] = res['includes']['users'][0]['username']
-    ctx['base']['text'] = res['data']['text']
-    ctx['base']['id'] = res['data']['id']
-    ctx['base']['date'] = trim_date(res['data']['created_at'])
+    ctx['name'] = res['includes']['users'][0]['name']
+    ctx['username'] = res['includes']['users'][0]['username']
+    ctx['text'] = res['data']['text']
+    ctx['id'] = res['data']['id']
+    ctx['date'] = trim_date(res['data']['created_at'])
     ctx['aux']['user_id'] = res['includes']['users'][0]['id']
     return ctx
 
@@ -58,16 +51,24 @@ def request_tweet(twt_id):
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     return requests.get(url, params=payload, headers=heads).json()
 
-#TODO HACER UNA EXCEPTION SI EL TWEET ES MAS ANTIGUO QUE UNA SEMANA
-def thread(request, id):    #borrar el id mas adelante, ya no se usa
-    user_id = tweet_ctx['aux']['user_id']
+#Ajax - el thread de una respuesta
+def new_thread(request):
+    twid = request.GET['twid']
+    user_id = request.GET['user_id']
     res = request_thread(user_id)
-    return render(request, 'threads/thread.html', fill_thread_context(tweet_ctx, compose_thread(res, conv)))
+    res = compose_thread(res, twid)
+    return JsonResponse(res)
 
-def fill_thread_context(ctx, res):
-    ctx['tweets'] = res['items']
-    ctx['token'] = res['token']
-    return ctx
+#Ajax - mas respuestas en un thread
+def expand_thread(request):
+    token = request.GET['token']
+    twid = request.GET['twid']
+    user_id = request.GET['user_id']
+    # with open(BASE_DIR / 'threads/json_mocks/fake/no_token.json', encoding='utf-8') as mock:
+    #     res = json.load(mock)
+    res = request_thread(user_id, token)
+    res = compose_thread(res, twid)
+    return JsonResponse(res)
 
 def request_thread(user_id, token=None):
     url = 'https://api.twitter.com/2/tweets/search/recent'
@@ -106,21 +107,3 @@ def demention(texto, ents):
     pos = ents['mentions'][0]['end'] + 1
     return texto[pos:]
 
-#mas respuestas en un thread
-def expand_thread(request):
-    token = request.GET['token']
-    twid = request.GET['twid']
-    user_id = request.GET['user_id']
-    # with open(BASE_DIR / 'threads/json_mocks/fake/no_token.json', encoding='utf-8') as mock:
-    #     res = json.load(mock)
-    res = request_thread(user_id, token)
-    res = compose_thread(res, twid)
-    return JsonResponse(res)
-
-#el thread de una respuesta
-def new_thread(request):
-    twid = request.GET['twid']
-    user_id = request.GET['user_id']
-    res = request_thread(user_id)
-    res = compose_thread(res, twid)
-    return JsonResponse(res)

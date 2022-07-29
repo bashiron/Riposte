@@ -88,6 +88,9 @@ function openThread(reply) {
             },
             success: function (res) {
                 const tweets = generateElements(res);
+                tweets.forEach(e => e.click(function () {
+                    openThread($(this));
+                }));
                 if (res.token) {
                     const btn = $('<a/>', {
                         'class': 'load-more btn btn-primary btn-lg',
@@ -96,7 +99,7 @@ function openThread(reply) {
                     btn.click(function () {
                         moreReplies($(this));
                     });
-                    tweets.push();
+                    tweets.push(btn);
                 }
                 fila.append(tweets);
                 $('#lv-' + (lvl+1)).replaceWith(fila);
