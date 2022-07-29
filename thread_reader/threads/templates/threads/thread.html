@@ -1,7 +1,7 @@
 {% extends 'threads/tweet.html' %}
 {% block thread %}
     <div class="container mw-100">
-        <div class="fila" data-id="{{ base.id }}" data-user="{{ aux.user_id }}">
+        <div id="lv-1" class="fila" data-id="{{ base.id }}" data-user="{{ aux.user_id }}">
             {% for tw in tweets %}
                     <article class="content-section" data-id="{{ tw.id }}" data-user="{{ tw.user_id }}">
                         <div class="article-metadata">
@@ -12,17 +12,19 @@
                     </article>
             {% endfor %}
             {% if token %}
-                <a class="load-more btn btn-primary btn-lg" id="more-n" data-token="{{ token }}"></a>
+                <a class="load-more btn btn-primary btn-lg" data-token="{{ token }}"></a>
             {% endif %}
         </div>
+        <div id="lv-2" class="fila"></div>
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#more-n').click(function () {
-                moreReplies("{% url 'more' %}");
+            storeUrls("{% url 'more' %}", "{% url 'open' %}");
+            $('.fila .load-more').click(function () {
+                moreReplies($(this));
             });
             $('.fila .content-section').click(function () {
-                openThread($(this), "{% url 'open' %}");
+                openThread($(this));
             });
         });
     </script>

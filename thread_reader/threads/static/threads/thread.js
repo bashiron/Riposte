@@ -1,7 +1,12 @@
-const conv = $('#base-tweet').attr('data-conv');    //aun no se usa...
+let more_url = undefined
+let open_url = undefined
 
-function moreReplies(url) {
-    const boton = $('#more-n');   //reemplazar n por el numero de boton (depende del nivel)
+function storeUrls(more, open) {
+    more_url = more;
+    open_url = open;
+}
+
+function moreReplies(boton) {
     const fila = boton.parent();
     const tok = boton.attr('data-token');
     const twid = fila.attr('data-id');
@@ -9,7 +14,7 @@ function moreReplies(url) {
     $.ajax(
         {
             type: 'GET',
-            url: url,
+            url: more_url,
             data: {
                 token: tok,
                 twid: twid,
@@ -17,8 +22,11 @@ function moreReplies(url) {
             },
             success: function (res) {
                 const tweets = generateElements(res);
+                tweets.forEach(e => e.click(function () {
+                    openThread($(this));
+                }));
                 if (res.token) {
-                    tweets.push(boton.attr('data-token', res.token));    //actualizo el token y muevo el boton al final de la lista
+                    tweets.push(boton.attr('data-token', res.token));   //actualizo el token y muevo el boton al final de la lista
                 } else {
                     boton.remove();
                 }
@@ -59,11 +67,13 @@ function generateElements(res) {
     return elems
 }
 
-function openThread(reply, url) {
-    const container = reply.parent();
-    const twid = reply.attr('data-id')
+function openThread(reply) {
+    const container = reply.parent().parent();
+    const lvl = parseInt(reply.parent().attr('id').substr(3));  //tomo el numero de la fila
+    const twid = reply.attr('data-id');
     const user_id = reply.attr('data-user');
     const fila = $('<div/>', {
+        id: 'lv-' + (lvl+1),
         'class': 'fila',
         'data-id': twid,
         'data-user': user_id
@@ -71,7 +81,7 @@ function openThread(reply, url) {
     $.ajax(
         {
             type: 'GET',
-            url: url,
+            url: open_url,
             data: {
                 twid: twid,
                 user_id: user_id
@@ -79,14 +89,21 @@ function openThread(reply, url) {
             success: function (res) {
                 const tweets = generateElements(res);
                 if (res.token) {
-                    tweets.push($('<a/>', {
+                    const btn = $('<a/>', {
                         'class': 'load-more btn btn-primary btn-lg',
-                        id: 'more-n',   //reemplazar n por el numero de boton (depende del nivel)
                         'data-token': res.token
-                    }));
+                    });
+                    btn.click(function () {
+                        moreReplies($(this));
+                    });
+                    tweets.push();
                 }
                 fila.append(tweets);
-                container.append(fila);
+                $('#lv-' + (lvl+1)).replaceWith(fila);
+                container.append($('<div/>', {
+                    id: 'lv-' + (lvl+2),
+                    'class': 'fila'
+                }));
             }
         }
     );
