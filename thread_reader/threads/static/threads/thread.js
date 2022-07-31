@@ -1,7 +1,9 @@
-let more_url = undefined
-let open_url = undefined
+let media_url = undefined;
+let more_url = undefined;
+let open_url = undefined;
 
-function storeUrls(more, open) {
+function storeUrls(media, more, open) {
+    media_url = media;
     more_url = more;
     open_url = open;
 }
@@ -44,6 +46,7 @@ function generateElements(res) {
             html: res.items[i].name
         });
         const link = $('<a/>', {
+            'class': 'link',
             href: `https://twitter.com/${res.items[i].username}/status/${res.items[i].id}`,
             target: '_blank',
             html: 'link'
@@ -94,7 +97,11 @@ function openThread(reply) {
                 if (res.token) {
                     const btn = $('<a/>', {
                         'class': 'load-more btn btn-primary btn-lg',
-                        'data-token': res.token
+                        'data-token': res.token,
+                        html: $('<img/>', {
+                            src: media_url + '/icons/circle-plus-solid.svg',
+                            alt: 'cargar mas'
+                        })
                     });
                     btn.click(function () {
                         moreReplies($(this));

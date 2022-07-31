@@ -1,40 +1,22 @@
+:root {
+  --article-color: rgb(174, 216, 217);
+  --article-hover-color: rgb(226 233 255);
+  --article-locked-color: rgb(106 138 139);
+}
+
 body {
   background: #fafafa;
   color: #333333;
   margin-top: 5rem;
 }
 
-.fila {
-  overflow: auto;
-  white-space: nowrap;
-  height: 250px;
-}
-
-.base-tweet .content-section {
-  height: 260px;
-}
-
-.content-section {
-  display: inline-block;
-  vertical-align: top;
-  margin-right: 20px;
-  white-space: normal;
-  background: rgb(174, 216, 217);
+#base-tweet {
+  background: var(--article-color);
   padding: 10px 20px;
   border: 5px solid rgb(154, 225, 226);
   border-radius: 3px;
-  width: 400px;
-  height: 230px;
-  cursor: pointer;
-}
-
-.article-content {
-  white-space: pre-line;
-  margin-top: 10px;
-  overflow: auto;
-  height: 145px;
-  font-size: larger;
-  font-weight: 400;
+  height: 260px;
+  cursor: default;
 }
 
 #top-username {
@@ -46,13 +28,12 @@ body {
   font-size: x-large;
 }
 
-.user-name {
-  font-size: large;
-  cursor: default;
-}
-
-.user-name:hover {
-  color: #617ea7;
+.base-content {
+  margin-top: 10px;
+  overflow: auto;
+  height: 145px;
+  font-size: larger;
+  font-weight: 400;
 }
 
 .text-muted {
@@ -69,9 +50,86 @@ body {
   height: 60px;
 }
 
+.fila {
+  overflow: auto;
+  white-space: nowrap;
+  height: 270px;
+  padding-top: 15px;
+  padding-left: 15px;
+}
+
+.content-section {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 20px;
+  white-space: normal;
+  background: var(--article-color);
+  padding: 10px 20px;
+  border: 5px solid rgb(154, 225, 226);
+  border-radius: 3px;
+  width: 400px;
+  height: 90%;
+  cursor: pointer;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.content-section:hover {
+  background: var(--article-hover-color);
+  border: 5px solid rgb(177 198 225);
+  -webkit-transform: translateY(-50%) scale(1.07);
+  -moz-transform: translateY(-50%) scale(1.07);
+  transform: translateY(-50%) scale(1.07);
+}
+
+.article-content {
+  white-space: pre-line;
+  margin-top: 10px;
+  overflow: auto;
+  height: 80%;
+  font-size: larger;
+  font-weight: 400;
+}
+
+/* lockear el scrollbar */
+.locked-thread {
+  
+}
+
+.locked-thread article{
+  background: var(--article-locked-color);
+}
+
+.opened-reply {
+  background: var(--article-color);
+}
+
+.user-name {
+  font-size: large;
+  cursor: default;
+}
+
+.user-name:hover {
+  color: #617ea7;
+}
+
 .load-more {
-  height: 30px;
-  width: 30px;
+  height: 90%;
+  width: 50px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.load-more img {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(96deg) brightness(102%) contrast(101%);
 }
 
 ::-webkit-scrollbar {

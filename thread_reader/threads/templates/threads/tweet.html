@@ -1,14 +1,14 @@
 {% extends 'threads/base.html' %}
 {% block content %}
-    <div class="base-tweet d-flex flex-row justify-content-center">
-        <article id="base-tweet" data-conv="{{ id }}" class="content-section w-25">
-            <div class="article-metadata">
+    <div class="d-flex flex-row justify-content-center">
+        <article id="base-tweet" data-conv="{{ id }}" class="w-25">
+            <div class="base-metadata">
                 <a id="top-username"
                    class="mr-2"
                    href="https://twitter.com/{{ username }}"
                    target="_blank">{{ name }}</a>
             </div>
-            <p class="article-content">{{ text }}</p>
+            <p class="base-content">{{ text }}</p>
             <div class="text-muted">
                 <a href="https://twitter.com/{{ username }}/status/{{ id }}"
                    target="_blank">{{ date }}</a>
@@ -22,7 +22,7 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
-            storeUrls("{% url 'more' %}", "{% url 'open' %}");
+            storeUrls("{% get_media_prefix %}", "{% url 'more' %}", "{% url 'open' %}");
             art = $('<article/>', {
                 'data-id': '{{id}}',
                 'data-user': '{{aux.user_id}}'
@@ -31,6 +31,4 @@
             openThread(art);
         });
     </script>
-    {% block thread %}
-    {% endblock thread %}
 {% endblock content %}
