@@ -96,17 +96,14 @@ body {
   font-weight: 400;
 }
 
-/* lockear el scrollbar */
 .locked-thread {
-  
+  overflow: hidden;
 }
 
-.locked-thread article{
+.locked-thread article:not(.active){
   background: var(--article-locked-color);
-}
-
-.opened-reply {
-  background: var(--article-color);
+  border-color: rgb(31 90 90);
+  cursor: default;
 }
 
 .user-name {
