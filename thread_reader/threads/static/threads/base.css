@@ -75,12 +75,16 @@ body {
   transform: translateY(-50%);
 }
 
-.content-section:hover {
+.content-section.focused {
   background: var(--article-hover-color);
   border: 5px solid rgb(177 198 225);
   -webkit-transform: translateY(-50%) scale(1.07);
   -moz-transform: translateY(-50%) scale(1.07);
   transform: translateY(-50%) scale(1.07);
+}
+
+.content-section.active {
+  font-weight: 500;
 }
 
 .article-content {

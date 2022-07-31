@@ -23,10 +23,7 @@ function moreReplies(boton) {
                 user_id: usid
             },
             success: function (res) {
-                const tweets = generateElements(res);
-                tweets.forEach(e => e.click(function () {
-                    openThread($(this));
-                }));
+                const tweets = prepareTweets(res);
                 if (res.token) {
                     tweets.push(boton.attr('data-token', res.token));   //actualizo el token y muevo el boton al final de la lista
                 } else {
@@ -37,6 +34,19 @@ function moreReplies(boton) {
         }
     );
 };
+
+//genera el html y define los handlers a eventos
+function prepareTweets(res) {
+    const tweets = generateElements(res);
+    tweets.forEach(e => e.click(function () {
+        if (!e.hasClass('active')) {
+            openThread($(this));
+        } else {
+            closeThread($(this));
+        }
+    }));
+    return tweets;
+}
 
 function generateElements(res) {
     const elems = [];
@@ -65,16 +75,24 @@ function generateElements(res) {
             'data-user': res.items[i].user_id,
             html: [metadata, parrafo_cont, link]
         });
+        articulo.mouseenter(function () {
+            $(this).addClass('focused');
+        });
+        articulo.mouseleave(function () {
+            $(this).removeClass('focused');
+        });
         elems.push(articulo);
     }
-    return elems
+    return elems;
 }
 
 function openThread(reply) {
     const container = reply.parent().parent();
-    const lvl = parseInt(reply.parent().attr('id').substr(3));  //tomo el numero de la fila
+    const lvl = extractLevel(reply);
     const twid = reply.attr('data-id');
     const user_id = reply.attr('data-user');
+    reply.off('mouseleave');    //desactivo el handler de cuando saco el mouse
+    reply.addClass('active');
     const fila = $('<div/>', {
         id: 'lv-' + (lvl+1),
         'class': 'fila',
@@ -90,10 +108,7 @@ function openThread(reply) {
                 user_id: user_id
             },
             success: function (res) {
-                const tweets = generateElements(res);
-                tweets.forEach(e => e.click(function () {
-                    openThread($(this));
-                }));
+                const tweets = prepareTweets(res);
                 if (res.token) {
                     const btn = $('<a/>', {
                         'class': 'load-more btn btn-primary btn-lg',
@@ -110,11 +125,30 @@ function openThread(reply) {
                 }
                 fila.append(tweets);
                 $('#lv-' + (lvl+1)).replaceWith(fila);
-                container.append($('<div/>', {
+                container.append($('<div/>', {  //dejo una fila vacia para el siguiente openThread
                     id: 'lv-' + (lvl+2),
                     'class': 'fila'
                 }));
             }
         }
     );
+}
+
+//tomo el numero de la fila
+function extractLevel(reply) {
+    return parseInt(reply.parent().attr('id').substr(3));
+}
+
+function closeThread(reply) {
+    const container = reply.parent().parent();
+    const lvl = extractLevel(reply);
+    container.children().slice(lvl+1).remove();   //borro las filas que vienen delante
+    container.append($('<div/>', {
+        id: 'lv-' + (lvl+1),
+        'class': 'fila'
+    }));
+    reply.mouseleave(function () {
+        $(this).removeClass('focused');
+    });
+    reply.removeClass('active');
 }

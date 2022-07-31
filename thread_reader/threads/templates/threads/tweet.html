@@ -1,5 +1,6 @@
 {% extends 'threads/base.html' %}
 {% block content %}
+{% load static %}
     <div class="d-flex flex-row justify-content-center">
         <article id="base-tweet" data-conv="{{ id }}" class="w-25">
             <div class="base-metadata">
@@ -16,7 +17,7 @@
         </article>
     </div>
     <div id="separador"></div>
-    <div id="cont-threads" class="container mw-100">
+    <div class="container mw-100">
         <div id="lv-0"></div>
         <div id="lv-1"></div>
     </div>
