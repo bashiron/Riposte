@@ -29,7 +29,7 @@ def tweet(request, id):
     # with open(BASE_DIR / 'threads/json_mocks/fake/long_tweet.json', encoding='utf-8') as mock:
     #     res = json.load(mock)
     global conv
-    conv = str(id)
+    conv = res['data']['conversation_id']
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
 def fill_tweet_context(ctx, res):
@@ -47,7 +47,7 @@ def trim_date(date):
 
 def request_tweet(twt_id):
     url = f'https://api.twitter.com/2/tweets/{twt_id}'
-    payload = {'tweet.fields': 'created_at,attachments', 'expansions': 'author_id'} #TODO agregar public_metrics
+    payload = {'tweet.fields': 'created_at,attachments,conversation_id', 'expansions': 'author_id'} #TODO agregar public_metrics
     heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
     return requests.get(url, params=payload, headers=heads).json()
 

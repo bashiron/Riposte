@@ -10,6 +10,21 @@ body {
   margin-top: 5rem;
 }
 
+.tweet-input {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.tweet-input input[type=url] {
+  height: 50px;
+  width: 500px;
+}
+.tweet-input input[type=submit] {
+  margin-left: 12px;
+}
+
 #base-tweet {
   background: var(--article-color);
   padding: 10px 20px;
