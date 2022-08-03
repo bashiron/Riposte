@@ -43,6 +43,7 @@ class Fetcher:
     def __request_thread(self, user_id, token):
         url = 'https://api.twitter.com/2/tweets/search/recent'
         payload = {'query': f'conversation_id:{self.conv} to:{user_id}', 'tweet.fields': 'referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+        # payload = {'query': f'conversation_id:{self.conv} to:{user_id}', 'tweet.fields': 'referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username', 'sort_order': 'relevancy'}
         if token is not None:
             payload['next_token'] = token
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
@@ -50,6 +51,7 @@ class Fetcher:
 
     # construimos un nuevo json iterando sobre la respuesta
     def __compose_thread(self, res, twid):
+        print('RECIBIDOS: ' + str(len(res['data'])))
         conjunto = list(zip(res['data'], res['includes']['users']))             #juntamos las dos listas
         merged = list(map(lambda c: self.__merge_tweet_data(c, twid), conjunto))  #creamos nueva lista con datos obtenidos al iterar sobre el conjunto. el lambda es para poder enviar un argumento ademas de la lista
         filtrados = list(filter(None, merged))                                  #filtro los None que quedaron en el medio

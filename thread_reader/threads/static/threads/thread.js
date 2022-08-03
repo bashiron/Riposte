@@ -23,6 +23,8 @@ function moreReplies(boton) {
                 user_id: usid
             },
             success: function (res) {
+                console.log('respuestas cargadas con exito!');
+                console.log('cantidad: ' + res.items.length);
                 const tweets = prepareTweets(res);
                 if (res.token) {
                     tweets.push(boton.attr('data-token', res.token));   //actualizo el token y muevo el boton al final de la lista
@@ -107,7 +109,8 @@ function openThread(reply) {
     reply.off('mouseleave');    //desactivo el handler de cuando saco el mouse
     reply.addClass('active');
     fila.addClass('locked-thread');
-    fila.children(':not(.active)').off('click mouseenter mouseleave');    //desactivo el handler de click para todos los otros tweets
+    fila.children('article:not(.active)').off('click mouseenter mouseleave');    //desactivo el handler de click para todos los otros tweets
+    fila.find('.load-more').off('click')
     const new_fila = $('<div/>', {
         id: 'lv-' + (lvl+1),
         'class': 'fila',
@@ -123,6 +126,8 @@ function openThread(reply) {
                 user_id: user_id
             },
             success: function (res) {
+                console.log('thread abierto con exito!');
+                console.log('cantidad: ' + res.items.length);
                 const tweets = prepareTweets(res);
                 if (res.token) {
                     const btn = $('<a/>', {
@@ -159,8 +164,11 @@ function closeThread(reply) {
     const container = fila.parent();
     const lvl = extractLevel(reply);
     fila.removeClass('locked-thread');
-    fila.children(':not(.active)').each(function () {
+    fila.children('article:not(.active)').each(function () {
         setTweetHandlers($(this));
+    });
+    fila.find('.load-more').click(function () {
+        moreReplies($(this));
     });
     container.children().slice(lvl+1).remove();   //borro las filas que vienen delante
     container.append($('<div/>', {

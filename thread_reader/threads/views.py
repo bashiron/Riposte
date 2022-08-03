@@ -6,7 +6,7 @@ from .twitter_requests import R, M, Fetcher
 from .mock_provider import sequence
 
 tweet_ctx = {'aux': {}}
-fetcher = Fetcher(M)    # definir si usar el modo real o mock
+fetcher = Fetcher(R)    # definir si usar el modo real o mock
 
 def home(request):
     if request.method == 'POST':
