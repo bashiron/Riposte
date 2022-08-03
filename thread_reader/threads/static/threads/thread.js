@@ -12,7 +12,6 @@ function moreReplies(boton) {
     const fila = boton.parent();
     const tok = boton.attr('data-token');
     const twid = fila.attr('data-id');
-    const usid = fila.attr('data-user');
     $.ajax(
         {
             type: 'GET',
@@ -20,7 +19,6 @@ function moreReplies(boton) {
             data: {
                 token: tok,
                 twid: twid,
-                user_id: usid
             },
             success: function (res) {
                 console.log('respuestas cargadas con exito!');
@@ -92,7 +90,6 @@ function generateElements(res) {
         const articulo = $('<article/>', {
             'class': 'content-section',
             'data-id': res.items[i].id,
-            'data-user': res.items[i].user_id,
             html: [metadata, parrafo_cont, link]
         });
         elems.push(articulo);
@@ -105,7 +102,6 @@ function openThread(reply) {
     const container = fila.parent();
     const lvl = extractLevel(reply);
     const twid = reply.attr('data-id');
-    const user_id = reply.attr('data-user');
     reply.off('mouseleave');    //desactivo el handler de cuando saco el mouse
     reply.addClass('active');
     fila.addClass('locked-thread');
@@ -114,16 +110,14 @@ function openThread(reply) {
     const new_fila = $('<div/>', {
         id: 'lv-' + (lvl+1),
         'class': 'fila',
-        'data-id': twid,
-        'data-user': user_id
+        'data-id': twid
     });
     $.ajax(
         {
             type: 'GET',
             url: open_url,
             data: {
-                twid: twid,
-                user_id: user_id
+                twid: twid
             },
             success: function (res) {
                 console.log('thread abierto con exito!');

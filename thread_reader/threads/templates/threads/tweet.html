@@ -25,8 +25,7 @@
         $(document).ready(function () {
             storeUrls("{% get_media_prefix %}", "{% url 'more' %}", "{% url 'open' %}");
             art = $('<article/>', {
-                'data-id': '{{id}}',
-                'data-user': '{{aux.user_id}}'
+                'data-id': '{{id}}'
             });
             $('#lv-0').append(art);
             openThread(art);

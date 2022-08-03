@@ -26,7 +26,6 @@ def extract_id(url):
 def tweet(request, twid):
     fetcher.set_mocks(sequence(['tweet/fake/long', 'thread/real/1', 'thread/real/2', 'thread/real/3']))
     res = fetcher.obtain_tweet(str(twid))
-    fetcher.set_conv_id(res['data']['conversation_id'])
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
 def fill_tweet_context(ctx, res):
@@ -45,15 +44,13 @@ def trim_date(date):
 # Ajax - el thread de una respuesta
 def new_thread(request):
     twid = request.GET['twid']
-    user_id = request.GET['user_id']
-    res = fetcher.obtain_thread(user_id, twid)
+    res = fetcher.obtain_thread(twid)
     return JsonResponse(res)
 
 # Ajax - mas respuestas en un thread
 def expand_thread(request):
     token = request.GET['token']
     twid = request.GET['twid']
-    user_id = request.GET['user_id']
-    res = fetcher.obtain_thread(user_id, twid, token)
+    res = fetcher.obtain_thread(twid, token)
     return JsonResponse(res)
 
