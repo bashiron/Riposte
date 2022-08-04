@@ -21,8 +21,6 @@ function moreReplies(boton) {
                 twid: twid,
             },
             success: function (res) {
-                console.log('respuestas cargadas con exito!');
-                console.log('cantidad: ' + res.items.length);
                 const tweets = prepareTweets(res);
                 if (res.token) {
                     tweets.push(boton.attr('data-token', res.token));   //actualizo el token y muevo el boton al final de la lista
@@ -30,6 +28,7 @@ function moreReplies(boton) {
                     boton.remove();
                 }
                 fila.append(tweets);
+                updateSupports(extractLevel(fila));
             }
         }
     );
@@ -69,9 +68,12 @@ function setMouseHandlers(tweet) {
 function generateElements(res) {
     const elems = [];
     for (let i = 0; i < res.items.length; i++) {
-        const parrafo_meta = $('<p/>', {
+        const support = $('<div/>', {
+            'class': 'support'
+        });
+        const parrafo_meta = $('<div/>', {
             'class': 'user-name',
-            html: res.items[i].name
+            html: res.items[i].name,
         });
         const link = $('<a/>', {
             'class': 'link',
@@ -81,8 +83,9 @@ function generateElements(res) {
         })
         const metadata = $('<div/>', {
             'class': 'article-metadata',
-            html: [parrafo_meta, link]
+            html: [support, parrafo_meta, link]
         });
+        setMetadataHandlers(metadata);
         const parrafo_cont = $('<div/>', {
             'class': 'article-content',
             html: res.items[i].text
@@ -97,14 +100,30 @@ function generateElements(res) {
     return elems;
 }
 
+function setMetadataHandlers(meta) {
+    meta.hover(
+        function () {
+            $(this).css('overflow', 'visible');
+            $(this).find('.support').css('visibility', 'visible');
+            $(this).find('.user-name').css('color', '#617ea7');
+        },
+        function () {
+            $(this).css('overflow', 'hidden');
+            $(this).find('.support').css('visibility', 'hidden');
+            $(this).find('.user-name').css('color', 'black');
+        }
+    );
+}
+
 function openThread(reply) {
     const fila = reply.parent();
     const container = fila.parent();
-    const lvl = extractLevel(reply);
+    const lvl = extractLevel(fila);
     const twid = reply.attr('data-id');
     reply.off('mouseleave');    //desactivo el handler de cuando saco el mouse
     reply.addClass('active');
     fila.addClass('locked-thread');
+    fila.children('article').children('.article-metadata').off('mouseenter mouseleave');
     fila.children('article:not(.active)').off('click mouseenter mouseleave');    //desactivo el handler de click para todos los otros tweets
     fila.find('.load-more').off('click')
     const new_fila = $('<div/>', {
@@ -120,8 +139,6 @@ function openThread(reply) {
                 twid: twid
             },
             success: function (res) {
-                console.log('thread abierto con exito!');
-                console.log('cantidad: ' + res.items.length);
                 const tweets = prepareTweets(res);
                 if (res.token) {
                     const btn = $('<a/>', {
@@ -143,21 +160,29 @@ function openThread(reply) {
                     id: 'lv-' + (lvl+2),
                     'class': 'fila'
                 }));
+                updateSupports(lvl+1);
             }
         }
     );
 }
 
 //tomo el numero de la fila
-function extractLevel(reply) {
-    return parseInt(reply.parent().attr('id').substr(3));
+function extractLevel(fila) {
+    return parseInt(fila.attr('id').substr(3));
 }
 
 function closeThread(reply) {
     const fila = reply.parent();
     const container = fila.parent();
-    const lvl = extractLevel(reply);
+    const lvl = extractLevel(fila);
+    reply.mouseleave(function () {
+        $(this).removeClass('focused');
+    });
+    reply.removeClass('active');
     fila.removeClass('locked-thread');
+    fila.children('article').children('.article-metadata').each(function () {
+        setMetadataHandlers($(this));
+    });
     fila.children('article:not(.active)').each(function () {
         setTweetHandlers($(this));
     });
@@ -169,8 +194,12 @@ function closeThread(reply) {
         id: 'lv-' + (lvl+1),
         'class': 'fila'
     }));
-    reply.mouseleave(function () {
-        $(this).removeClass('focused');
+}
+
+function updateSupports(lvl) {
+    const sups = $('#lv-' + lvl).children('article').children('.article-metadata').children('.support').slice(-10);
+    sups.each(function () {
+        const txt = $(this).parent().find('.user-name');
+        $(this).css('height', txt.height());
     });
-    reply.removeClass('active');
 }

@@ -47,7 +47,6 @@ class Fetcher:
 
     # construimos un nuevo json iterando sobre la respuesta
     def __compose_thread(self, res, twid):
-        print('RECIBIDOS: ' + str(res['meta']['result_count']))
         conjunto = self.__zip_data(res['data'], res['includes']['users'], res['meta']['result_count'])
         merged = map(self.__merge_tweet_data, conjunto)  # creamos nueva lista con datos obtenidos al iterar sobre el conjunto
         filtrados = list(filter(None, merged))                 # filtro los None que quedaron en el medio

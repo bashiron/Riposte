@@ -105,23 +105,28 @@ body {
 }
 
 .article-metadata {
+  position: relative;
   height: 13%;
   overflow: hidden;
   word-break: break-all;
 }
 
-.article-metadata:hover {
-  overflow: visible;
+/* con esto el hover sobre metadata activa el hover sobre support */
+/* lo dejo por que casi lo uso pero esta bueno saberlo a futuro */
+/* .article-metadata:hover .support, */
+
+.support {
+  position: absolute;
+  visibility: hidden;
+  width: 350px;
+  background-color: var(--article-hover-color);
 }
 
 .user-name {
+  position: absolute;
   font-size: large;
   cursor: default;
-}
-
-.user-name:hover {
-  background: var(--article-hover-color);
-  color: #617ea7;
+  z-index: 10;  /*aparentemente opcional*/
 }
 
 .article-content {
