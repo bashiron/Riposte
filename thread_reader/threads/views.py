@@ -6,7 +6,7 @@ from .twitter_requests import R, M, Fetcher
 from .mock_provider import sequence
 
 tweet_ctx = {'aux': {}}
-fetcher = Fetcher(R)    # definir si usar el modo real o mock
+fetcher = Fetcher(M)    # definir si usar el modo real o mock
 
 def home(request):
     if request.method == 'POST':
@@ -24,7 +24,7 @@ def extract_id(url):
     return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
 def tweet(request, twid):
-    fetcher.set_mocks(sequence(['tweet/fake/long', 'thread/real/1', 'thread/real/2', 'thread/real/3']))
+    fetcher.set_mocks(sequence(['tweet/fake/long_word',  'thread/fake/long_usernames', 'thread/real/japanese', 'thread/fake/weird_chars']))
     res = fetcher.obtain_tweet(str(twid))
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
