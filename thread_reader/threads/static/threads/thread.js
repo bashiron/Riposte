@@ -178,7 +178,6 @@ function closeThread(reply) {
     reply.mouseleave(function () {
         $(this).removeClass('focused');
     });
-    reply.removeClass('active');
     fila.removeClass('locked-thread');
     fila.children('article').children('.article-metadata').each(function () {
         setMetadataHandlers($(this));
@@ -194,10 +193,11 @@ function closeThread(reply) {
         id: 'lv-' + (lvl+1),
         'class': 'fila'
     }));
+    reply.removeClass('active');
 }
 
 function updateSupports(lvl) {
-    const sups = $('#lv-' + lvl).children('article').children('.article-metadata').children('.support').slice(-10);
+    const sups = $('#lv-' + lvl).children('article').children('.article-metadata').children('.support').slice(-10); //los ultimos 10 ya que como maximo, y la mayoria de las veces, cargo 10 tweets
     sups.each(function () {
         const txt = $(this).parent().find('.user-name');
         $(this).css('height', txt.height());
