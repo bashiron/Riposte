@@ -25,7 +25,7 @@ class Fetcher:
 
     def __request_tweet(self, twt_id):
         url = f'https://api.twitter.com/2/tweets/{twt_id}'
-        payload = {'tweet.fields': 'created_at,attachments', 'expansions': 'author_id'}  #TODO agregar public_metrics
+        payload = {'tweet.fields': 'created_at,attachments,conversation_id,entities', 'expansions': 'author_id,attachments.media_keys', 'media.fields': 'url'}  #TODO agregar public_metrics
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
         return requests.get(url, params=payload, headers=heads).json()
 
@@ -38,8 +38,13 @@ class Fetcher:
 
     def __request_thread(self, twid, token):
         url = 'https://api.twitter.com/2/tweets/search/recent'
-        payload = {'query': f'in_reply_to_tweet_id: {twid}', 'tweet.fields': 'referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
-        # payload = {'query': f'in_reply_to_tweet_id: {twid}', 'tweet.fields': 'referenced_tweets,entities', 'expansions': 'author_id,attachments.media_keys', 'user.fields': 'name,username'}
+        payload = {
+            'query': f'in_reply_to_tweet_id: {twid}', 
+            'tweet.fields': 'referenced_tweets,entities,attachments', 
+            'expansions': 'author_id,attachments.media_keys', 
+            'media.fields': 'url', 
+            'user.fields': 'name,username'
+            }
         if token is not None:
             payload['next_token'] = token
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}

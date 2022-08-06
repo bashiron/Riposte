@@ -139,6 +139,31 @@ body {
   font-weight: 400;
 }
 
+.images-popup {
+  position: relative;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  left: 50%;
+  border: 2px solid black;
+}
+
+.images-popup img {
+  visibility: hidden;
+  width: 160px;
+  background-color: #555;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+}
+
+.images-popup .show {
+  visibility: visible;
+}
+
 .locked-thread {
   overflow: hidden;
 }

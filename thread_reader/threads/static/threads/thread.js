@@ -59,9 +59,11 @@ function setClickHandler(tweet) {
 function setMouseHandlers(tweet) {
     tweet.mouseenter(function () {
         $(this).addClass('focused');
+        $(this).find('.images-popup img').addClass('show');
     });
     tweet.mouseleave(function () {
         $(this).removeClass('focused');
+        $(this).find('.images-popup img').removeClass('show');
     });
 }
 
@@ -90,10 +92,19 @@ function generateElements(res) {
             'class': 'article-content',
             html: res.items[i].text
         });
+        const image = $('<img/>', {
+            src: 'https://pbs.twimg.com/media/FZc_1mfWQAAugSo?format=jpg&name=small',
+            width: '100',
+            height: '100'
+        });
+        const popup = $('<span/>', {
+            'class': 'images-popup',
+            html: image
+        });
         const articulo = $('<article/>', {
             'class': 'content-section',
             'data-id': res.items[i].id,
-            html: [metadata, parrafo_cont, link]
+            html: [metadata, parrafo_cont, popup, link]
         });
         elems.push(articulo);
     }
