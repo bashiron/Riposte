@@ -75,7 +75,11 @@ body {
   padding-left: 15px;
 }
 
-.content-section {
+.popups {
+  height: 230px;
+}
+
+/* .content-section {
   display: inline-block;
   vertical-align: middle;
   margin-right: 20px;
@@ -90,14 +94,37 @@ body {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+} */
+
+.content-section {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 20px;
+  white-space: normal;
+  background: var(--article-color);
+  padding: 10px 20px;
+  border: 5px solid rgb(154, 225, 226);
+  border-radius: 3px;
+  width: 400px;
+  height: 90%;
+  cursor: pointer;
+  position: static;
 }
 
-.content-section.focused {
+/* .content-section.focused {
   background: var(--article-hover-color);
   border: 5px solid rgb(177 198 225);
   -webkit-transform: translateY(-50%) scale(1.07);
   -moz-transform: translateY(-50%) scale(1.07);
   transform: translateY(-50%) scale(1.07);
+} */
+
+.content-section.focused {
+  background: var(--article-hover-color);
+  border: 5px solid rgb(177 198 225);
+  -webkit-transform: scale(1.07);
+  -moz-transform: scale(1.07);
+  transform: scale(1.07);
 }
 
 .content-section.active {
@@ -140,10 +167,12 @@ body {
 }
 
 .images-popup {
-  position: relative;
-  display: inline-block;
-  height: 10px;
-  width: 10px;
+  position: absolute;
+  /* display: none; */
+  display: block;
+  z-index: 10;
+  height: 100px;
+  width: 100px;
   left: 50%;
   border: 2px solid black;
 }
@@ -234,4 +263,73 @@ body {
 
 .article-content::-webkit-scrollbar-thumb:hover {
   background-color: #39788394;
+}
+
+
+
+
+/*                 PRUEBA                    */
+
+section {
+  width: 190px;
+  margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 180px;
+  border: 2px solid;
+}
+section div {
+  margin: 0;
+  height: 50px;
+  font-size: 1em;
+  position: static;
+  color: #555;
+}
+
+.tip span {
+  display: inline-block;
+  border: 1px solid;
+  border-color: #555;
+  margin: 0 2px 0 2px;
+  min-width: 180px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tip span:hover {
+  cursor: pointer;
+}
+.tip span:hover:before, .tip span:hover:after {
+  opacity: 1;
+  z-index: 1000;
+  display: block;
+}
+.tip span:before {
+  z-index: 10;
+  content: attr(data-tooltip);
+  background: #d9444a;
+  color: #fff;
+  padding: .8em 1em;
+  display: none;
+  position: absolute;
+  border-radius: 3px;
+  margin-left: 14px;
+  white-space: pre;
+}
+.tip span:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent #d9444a transparent transparent;
+}
+.tip span:before, .tip span:after {
+  opacity: 0;
+  -moz-transition: opacity 0.3s ease-out;
+  -o-transition: opacity 0.3s ease-out;
+  -webkit-transition: opacity 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
 }

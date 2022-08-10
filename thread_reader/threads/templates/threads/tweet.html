@@ -19,17 +19,33 @@
     </div>
     <div id="separador"></div>
     <div class="container mw-100">
-        <div id="lv-0"></div>
-        <div id="lv-1"></div>
+        <div id="lv-0" class="nivel">
+            <div class="fila"></div>
+        </div>
+        <div id="lv-1" class="nivel">
+            <div class="fila"></div>
+        </div>
     </div>
+    <div style="height: 200px"></div>
+    <section>
+        <div class="tip"><span data-tooltip="Feel free to check the item 1">Item 1</span></div>
+        <div class="tip"><span data-tooltip="Feel free to check the item 2">Item 2</span></div>
+        <div class="tip"><span data-tooltip="Feel free to check the item 3">Item 3</span></div>
+        <div class="tip"><span data-tooltip="Feel free to check the item 4">Item 4</span></div>
+        <div class="tip"><span data-tooltip="Feel free to check the item 5">Item 5</span></div>
+        <div class="tip"><span data-tooltip="Feel free to check the item 6">Item 6</span></div>
+    </section>
+    <style id="css"></style>
     <script type="text/javascript">
         $(document).ready(function () {
             storeUrls("{% get_media_prefix %}", "{% url 'more' %}", "{% url 'open' %}");
-            art = $('<article/>', {
+            const articulo = $('<article/>', {
                 'data-id': '{{id}}'
             });
-            $('#lv-0').append(art);
-            openThread(art);
+            $('#lv-0 .fila').append(articulo);
+            openThread(articulo);
+            const css = document.getElementById('css');
+            activarSpans(); //esto es de la lista de prueba
         });
     </script>
 {% endblock content %}
