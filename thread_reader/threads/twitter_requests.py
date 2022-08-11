@@ -34,7 +34,7 @@ class Fetcher:
             res = self.thread.pop(0)
         else:
             res = self.__request_thread(twid, token)
-        return self.__compose_thread(res, twid)
+        return self.__compose_thread(res)
 
     def __request_thread(self, twid, token):
         url = 'https://api.twitter.com/2/tweets/search/recent'
@@ -51,23 +51,34 @@ class Fetcher:
         return requests.get(url, params=payload, headers=heads).json()
 
     # construimos un nuevo json iterando sobre la respuesta
-    def __compose_thread(self, res, twid):
-        conjunto = self.__zip_data(res['data'], res['includes']['users'], res['meta']['result_count'])
+    def __compose_thread(self, res):
+        try:
+            media = res['includes']['media']
+        except KeyError:
+            media = []
+
+        conjunto = self.__zip_data(res['data'], res['includes']['users'], media, res['meta']['result_count'])
         merged = map(self.__merge_tweet_data, conjunto)  # creamos nueva lista con datos obtenidos al iterar sobre el conjunto
         filtrados = list(filter(None, merged))                 # filtro los None que quedaron en el medio
+
         try:
             token = res['meta']['next_token']
         except KeyError:
             token = False
+
         return {'token': token, 'items': filtrados}
 
-    def __zip_data(self, data, users, count):
+    def __zip_data(self, data, users, media, count):
         conjunto = []
         for n in range(count):
-            izq = data[n]
-            der = [user for user in users if user['id'] == izq['author_id']][0]  # el [0] es para tomar el primero y unico item de la lista generada
-            conjunto.append((izq, der))
+            datos = data[n]
+            usuarios = [user for user in users if user['id'] == datos['author_id']][0]  # el [0] es para tomar el primero y unico item de la lista generada
+            urls = self.__get_urls(data[n]['attachments']['media_keys'], media) if ('attachments' in datos) else []
+            conjunto.append((datos, usuarios, urls))
         return conjunto
+
+    def __get_urls(self, keys, media):
+        return [m['url'] for m in media if (m['media_key'] in keys) and m['type'] == 'photo']
 
     def __merge_tweet_data(self, tupla):
         return {
@@ -76,7 +87,8 @@ class Fetcher:
                 'id': tupla[0]['id'],
                 'user_id': tupla[1]['id'],
                 'username': tupla[1]['username'],
-                'name': tupla[1]['name']
+                'name': tupla[1]['name'],
+                'urls': tupla[2]
             }
 
     # quita la mencion del texto

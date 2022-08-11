@@ -66,13 +66,17 @@ function setMouseHandlers(tweet) {
     tweet.mouseenter(function () {
         const popup = getPopup($(this));
         $(this).addClass('focused');
-        popup.css('display', 'flex');
-        positionPopup(popup, $(this));
+        if (popup[0]) {
+            popup.css('display', 'flex');
+            positionPopup(popup, $(this));
+        }
     });
     tweet.mouseleave(function () {
         const popup = getPopup($(this));
         $(this).removeClass('focused');
-        popup.css('display', 'none');
+        if (popup[0]) {
+            popup.css('display', 'none');
+        }
     });
 }
 
@@ -84,7 +88,7 @@ function positionPopup(popup, tweet) {
     const rect = tweet[0].getBoundingClientRect();
     const left = rect.left;
     const width = rect.width;
-    const pop_width = popup.width();
+    const pop_width = popup[0].clientWidth;
     popup.css('left', `${left + (width/2) - (pop_width/2)}px`); //la resta de las mitades de los width son para centrar el popup
 }
 
@@ -146,17 +150,19 @@ function preparePopups(res) {
 function generatePopups(res) {
     const elems = [];
     for (let i = 0; i < res.items.length; i++) {
-        const image = $('<img/>', {
-            src: 'https://pbs.twimg.com/media/FZc_1mfWQAAugSo?format=jpg&name=small',
-            width: '100',
-            height: '100'
-        });
-        const popup = $('<span/>', {
-            'class': 'images-popup',
-            'data-id': res.items[i].id,
-            html: image
-        });
-        elems.push(popup);
+        if (res.items[i].urls[0]) {     //solo mostrar popup si el tweet tiene media
+            const image = $('<img/>', {
+                src: res.items[i].urls[0],  //por ahora solo uso la primer imagen
+                width: '200',
+                height: '200'
+            });
+            const popup = $('<span/>', {
+                'class': 'images-popup',
+                'data-id': res.items[i].id,
+                html: image
+            });
+            elems.push(popup);
+        }
     }
     return elems;
 }
@@ -167,7 +173,8 @@ function openThread(reply) {
     const container = nivel.parent();
     const lvl = extractLevel(nivel);
     const twid = reply.attr('data-id');
-    reply.off('mouseleave');    //desactivo el handler de cuando saco el mouse
+    reply.off('mouseenter mouseleave');    //desactivo el handler de cuando saco el mouse
+    getPopup(reply).css('display', 'none');
     reply.addClass('active');
     fila.addClass('locked-thread');
     fila.children('article').children('.article-metadata').off('mouseenter mouseleave');
@@ -232,9 +239,7 @@ function closeThread(reply) {
     const nivel = fila.parent();
     const container = nivel.parent();
     const lvl = extractLevel(nivel);
-    reply.mouseleave(function () {
-        $(this).removeClass('focused');
-    });
+    setMouseHandlers(reply);
     fila.removeClass('locked-thread');
     fila.children('article').children('.article-metadata').each(function () {
         setMetadataHandlers($(this));
@@ -269,28 +274,3 @@ function consoleInit() {
     art = $('#lv-1').children().eq(0).children().eq(2);
     links = $('.link');
 }
-
-
-
-//                              PRUEBA POPUPS                              
-
-
-let index, index2;
-
- function activarSpans() {
-     $('.tip span').hover(
-         function () {
-             var rect = $(this)[0].getBoundingClientRect();
-             var top = rect.top;
-             var bottom = rect.bottom;
-             var left = rect.right;
-          
-             index = css.sheet.insertRule(`.tip span::before{left:${left - 50}px;top:${top}px}`, 0);
-             index2 = css.sheet.insertRule(`.tip span::after{left:${left - 50}px;top:${top + 20}px}`, 0);
-             },
-         function () {
-             css.sheet.deleteRule(0);
-             css.sheet.deleteRule(0);
-         }
-     );
- }

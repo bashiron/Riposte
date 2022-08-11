@@ -150,14 +150,30 @@ body {
 }
 
 .images-popup {
-  position: absolute;
   display: none;
+  position: absolute;
+  z-index: 10;
+  top: -12px;
+  padding: 15px;
   align-items: center;
   justify-content: center;
-  z-index: 10;
   height: 250px;
   width: 250px;
+  background-color: #ffffea;
   border: 2px solid black;
+  border-radius: 15px;
+}
+
+.images-popup::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 9px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+  transform: rotate(180deg);
 }
 
 .images-popup img {
@@ -244,73 +260,4 @@ body {
 
 .article-content::-webkit-scrollbar-thumb:hover {
   background-color: #39788394;
-}
-
-
-
-
-/*                 PRUEBA                    */
-
-section {
-  width: 190px;
-  margin: 0 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 180px;
-  border: 2px solid;
-}
-section div {
-  margin: 0;
-  height: 50px;
-  font-size: 1em;
-  position: static;
-  color: #555;
-}
-
-.tip span {
-  display: inline-block;
-  border: 1px solid;
-  border-color: #555;
-  margin: 0 2px 0 2px;
-  min-width: 180px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.tip span:hover {
-  cursor: pointer;
-}
-.tip span:hover:before, .tip span:hover:after {
-  opacity: 1;
-  z-index: 1000;
-  display: block;
-}
-.tip span:before {
-  z-index: 10;
-  content: attr(data-tooltip);
-  background: #d9444a;
-  color: #fff;
-  padding: .8em 1em;
-  display: none;
-  position: absolute;
-  border-radius: 3px;
-  margin-left: 14px;
-  white-space: pre;
-}
-.tip span:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-width: 8px;
-  border-style: solid;
-  border-color: transparent #d9444a transparent transparent;
-}
-.tip span:before, .tip span:after {
-  opacity: 0;
-  -moz-transition: opacity 0.3s ease-out;
-  -o-transition: opacity 0.3s ease-out;
-  -webkit-transition: opacity 0.3s ease-out;
-  transition: opacity 0.3s ease-out;
 }
