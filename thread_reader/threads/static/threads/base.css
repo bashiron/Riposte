@@ -66,6 +66,10 @@ body {
   height: 60px;
 }
 
+.container {
+  position: relative;
+}
+
 .fila {
   overflow: auto;
   /* overflow-y: hidden; tal vez activar mas tarde*/
@@ -76,10 +80,12 @@ body {
 }
 
 .popups {
+  position: absolute;
+  width: 100%;
   height: 230px;
 }
 
-/* .content-section {
+.content-section {
   display: inline-block;
   vertical-align: middle;
   margin-right: 20px;
@@ -94,37 +100,14 @@ body {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-} */
-
-.content-section {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 20px;
-  white-space: normal;
-  background: var(--article-color);
-  padding: 10px 20px;
-  border: 5px solid rgb(154, 225, 226);
-  border-radius: 3px;
-  width: 400px;
-  height: 90%;
-  cursor: pointer;
-  position: static;
 }
 
-/* .content-section.focused {
+.content-section.focused {
   background: var(--article-hover-color);
   border: 5px solid rgb(177 198 225);
   -webkit-transform: translateY(-50%) scale(1.07);
   -moz-transform: translateY(-50%) scale(1.07);
   transform: translateY(-50%) scale(1.07);
-} */
-
-.content-section.focused {
-  background: var(--article-hover-color);
-  border: 5px solid rgb(177 198 225);
-  -webkit-transform: scale(1.07);
-  -moz-transform: scale(1.07);
-  transform: scale(1.07);
 }
 
 .content-section.active {
@@ -168,17 +151,16 @@ body {
 
 .images-popup {
   position: absolute;
-  /* display: none; */
-  display: block;
+  display: none;
+  align-items: center;
+  justify-content: center;
   z-index: 10;
-  height: 100px;
-  width: 100px;
-  left: 50%;
+  height: 250px;
+  width: 250px;
   border: 2px solid black;
 }
 
 .images-popup img {
-  visibility: hidden;
   width: 160px;
   background-color: #555;
   color: #fff;
@@ -186,7 +168,6 @@ body {
   padding: 8px 0;
   position: absolute;
   z-index: 1;
-  left: 50%;
 }
 
 .images-popup .show {

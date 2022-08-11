@@ -64,15 +64,28 @@ function setClickHandler(tweet) {
 
 function setMouseHandlers(tweet) {
     tweet.mouseenter(function () {
+        const popup = getPopup($(this));
         $(this).addClass('focused');
-        // css.sheet.insertRule(`.images-popup{opacity: 1; z-index: 1000; display: block}`, 0);
-        // $(this).find('.images-popup img').addClass('show');
+        popup.css('display', 'flex');
+        positionPopup(popup, $(this));
     });
     tweet.mouseleave(function () {
+        const popup = getPopup($(this));
         $(this).removeClass('focused');
-        // css.sheet.deleteRule(0);
-        // $(this).find('.images-popup img').removeClass('show');
+        popup.css('display', 'none');
     });
+}
+
+function getPopup(tweet) {
+    return tweet.parent().next().find($(`[data-id="${tweet.attr('data-id')}"]`));
+}
+
+function positionPopup(popup, tweet) {
+    const rect = tweet[0].getBoundingClientRect();
+    const left = rect.left;
+    const width = rect.width;
+    const pop_width = popup.width();
+    popup.css('left', `${left + (width/2) - (pop_width/2)}px`); //la resta de las mitades de los width son para centrar el popup
 }
 
 function generateTweets(res) {
@@ -140,8 +153,8 @@ function generatePopups(res) {
         });
         const popup = $('<span/>', {
             'class': 'images-popup',
-            html: res.items[i].name
-            // html: image
+            'data-id': res.items[i].id,
+            html: image
         });
         elems.push(popup);
     }
@@ -253,7 +266,7 @@ function updateSupports(lvl) {
 
 function consoleInit() {
     console.log('Variables inicializadas');
-    art = $('#lvl-1').children().eq(2);
+    art = $('#lv-1').children().eq(0).children().eq(2);
     links = $('.link');
 }
 
