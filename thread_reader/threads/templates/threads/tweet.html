@@ -30,7 +30,7 @@
     <style id="css"></style>
     <script type="text/javascript">
         $(document).ready(function () {
-            storeUrls("{% get_media_prefix %}", "{% url 'more' %}", "{% url 'open' %}");
+            storeUrls("{% get_media_prefix %}", "{% url 'open' %}", "{% url 'more' %}", "{% url 'close' %}");
             const articulo = $('<article/>', {
                 'data-id': '{{id}}'
             });

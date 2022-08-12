@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import re
 from .forms import LinkForm
@@ -24,7 +24,8 @@ def extract_id(url):
     return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
 def tweet(request, twid):
-    fetcher.set_mocks(sequence(['tweet/fake/long_word', 'thread/real/1', 'thread/fake/long_username', 'thread/real/japanese', 'thread/fake/weird_chars', 'thread/fake/end']))
+    fetcher.reset_userids()
+    fetcher.set_mocks(sequence(['tweet/fake/long_word', 'thread/real/1', 'thread/real/2', 'thread/real/3']))
     res = fetcher.obtain_tweet(str(twid))
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
@@ -45,6 +46,7 @@ def trim_date(date):
 def new_thread(request):
     twid = request.GET['twid']
     res = fetcher.obtain_thread(twid)
+    fetcher.put_userid(res['parent'])
     return JsonResponse(res)
 
 # Ajax - mas respuestas en un thread
@@ -53,4 +55,11 @@ def expand_thread(request):
     twid = request.GET['twid']
     res = fetcher.obtain_thread(twid, token)
     return JsonResponse(res)
+
+# Ajax - colapsar niveles de thread
+def collapse_thread(request):
+    amount = int(request.GET['num'])
+    fetcher.del_userids(amount)
+    return HttpResponse(f'<borrados {amount} niveles>')
+    # return HttpResponse('success')
 

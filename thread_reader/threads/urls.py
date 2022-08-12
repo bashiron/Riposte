@@ -5,5 +5,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('tweet/<int:twid>/', views.tweet, name='tweet'),
     path('load-more/', views.expand_thread, name="more"),
-    path('open-thread/', views.new_thread, name="open")
+    path('open-thread/', views.new_thread, name="open"),
+    path('collapse/', views.collapse_thread, name="close")
 ]

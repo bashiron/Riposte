@@ -1,13 +1,15 @@
 let media_url = undefined;
 let more_url = undefined;
 let open_url = undefined;
+let close_url = undefined;
 
 let art, links;    //variables para debugear en consola
 
-function storeUrls(media, more, open) {
+function storeUrls(media, open, more, close) {
     media_url = media;
-    more_url = more;
     open_url = open;
+    more_url = more;
+    close_url = close;
 }
 
 function moreReplies(boton) {
@@ -266,6 +268,17 @@ function closeThread(reply) {
     const nivel = fila.parent();
     const container = nivel.parent();
     const lvl = extractLevel(nivel);
+    const last_lvl = extractLevel(container.children().eq(-2));     //el nivel del anteultimo ya que el ultimo esta vacio
+    $.ajax(
+        {
+            type: 'GET',
+            url: close_url,
+            data: {
+                num: last_lvl - lvl
+            },
+            success: res => console.log(res)
+        }
+    );
     setMouseHandlers(reply);
     fila.removeClass('locked-thread');
     fila.children('article').children('.article-metadata').each(function () {

@@ -1,4 +1,5 @@
 import requests, environ
+from queue import Queue, LifoQueue
 
 M = 'mock'
 R = 'real'
@@ -11,10 +12,23 @@ class Fetcher:
     def __init__(self, mode):
         self.mode = mode
         self.tweet = None
-        self.thread = []
+        self.thread = Queue()
+        self.user_stack = LifoQueue()
 
     def set_mocks(self, mocks):
-        self.tweet, *self.thread = mocks   #descompongo la lista en las dos variables
+        self.tweet, *thr = mocks   #descompongo la lista en las dos variables
+        for t in thr:
+            self.thread.put(t)
+
+    def put_userid(self, usid):
+        self.user_stack.put(usid)
+
+    def del_userids(self, num):
+        for i in range(num):
+            self.user_stack.get()
+
+    def reset_userids(self):
+        self.user_stack = LifoQueue()
 
     def obtain_tweet(self, twt_id):
         if self.mode is M:
@@ -31,7 +45,7 @@ class Fetcher:
 
     def obtain_thread(self, twid, token=None):
         if self.mode is M:
-            res = self.thread.pop(0)
+            res = self.thread.get()
         else:
             res = self.__request_thread(twid, token)
         return self.__compose_thread(res)
@@ -41,7 +55,7 @@ class Fetcher:
         payload = {
             'query': f'in_reply_to_tweet_id: {twid}', 
             'tweet.fields': 'referenced_tweets,entities,attachments', 
-            'expansions': 'author_id,attachments.media_keys', 
+            'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
             'media.fields': 'url', 
             'user.fields': 'name,username'
             }
@@ -52,21 +66,24 @@ class Fetcher:
 
     # construimos un nuevo json iterando sobre la respuesta
     def __compose_thread(self, res):
+        parent = res['data'][0]['in_reply_to_user_id']
+
         try:
             media = res['includes']['media']
         except KeyError:
             media = []
 
         conjunto = self.__zip_data(res['data'], res['includes']['users'], media, res['meta']['result_count'])
-        merged = map(self.__merge_tweet_data, conjunto)  # creamos nueva lista con datos obtenidos al iterar sobre el conjunto
-        filtrados = list(filter(None, merged))                 # filtro los None que quedaron en el medio
+        merged = list(map(self.__merge_tweet_data, conjunto))  # creamos nueva lista con datos obtenidos al iterar sobre el conjunto
+
+
 
         try:
             token = res['meta']['next_token']
         except KeyError:
             token = False
 
-        return {'token': token, 'items': filtrados}
+        return {'token': token, 'items': merged, 'parent': parent}
 
     def __zip_data(self, data, users, media, count):
         conjunto = []
@@ -82,7 +99,7 @@ class Fetcher:
 
     def __merge_tweet_data(self, tupla):
         return {
-                # 'text': self.__demention(tupla[0]['text'], tupla[0]['entities']),
+                # 'text': self.__demention(tupla[0]['text'], tupla[0]['entities']['mentions']),
                 'text': tupla[0]['text'],
                 'id': tupla[0]['id'],
                 'user_id': tupla[1]['id'],
@@ -92,6 +109,11 @@ class Fetcher:
             }
 
     # quita la mencion del texto
-    def __demention(self, texto, ents):
-        pos = ents['mentions'][0]['end'] + 1
-        return texto[pos:]
+    def __demention(self, texto, mentions):
+        users = set(self.user_stack.queue)  # creo un conjunto sin repetidos a partir de la queue
+        menciones = [(m['start'], m['end']) for m in mentions if (m['id'] in users)]
+        print('hola')
+
+
+
+        return texto
