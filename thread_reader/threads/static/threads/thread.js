@@ -65,10 +65,13 @@ function setClickHandler(tweet) {
 function setMouseHandlers(tweet) {
     tweet.mouseenter(function () {
         const popup = getPopup($(this));
+        const index = popup.children().eq(-1).attr('data-index');
         $(this).addClass('focused');
         if (popup[0]) {
             popup.css('display', 'flex');
             positionPopup(popup, $(this));
+            popup.children('img').eq(index).css('display', 'block');
+            popup.find('button')[0].focus();
         }
     });
     tweet.mouseleave(function () {
@@ -151,20 +154,44 @@ function generatePopups(res) {
     const elems = [];
     for (let i = 0; i < res.items.length; i++) {
         if (res.items[i].urls[0]) {     //solo mostrar popup si el tweet tiene media
-            const image = $('<img/>', {
-                src: res.items[i].urls[0],  //por ahora solo uso la primer imagen
-                width: '200',
-                height: '200'
-            });
+            const imgs = res.items[i].urls.map(url => (
+                $('<img/>', {src: url})
+            ));
+            const but = $('<button/>', {'data-index': 0, 'data-max': imgs.length});
+            setButtonHandlers(but);
+            imgs.push(but);
             const popup = $('<span/>', {
                 'class': 'images-popup',
                 'data-id': res.items[i].id,
-                html: image
+                html: imgs
             });
             elems.push(popup);
         }
     }
     return elems;
+}
+
+function setButtonHandlers(button) {
+    button.keydown(function (ev) {navigatePics($(this),ev)});
+}
+
+function navigatePics(button, event) {
+    const index = parseInt(button.attr('data-index'));
+    const max = parseInt(button.attr('data-max'));
+    const pos = i => Math.abs(i) % max
+
+    switch (event.code) {
+        case 'KeyA':
+            button.parent().children('img').css('display', 'none');
+            button.parent().children('img').eq(pos(index-1)).css('display', 'block');
+            button.attr('data-index', index-1);
+            break
+        case 'KeyD':
+            button.parent().children('img').css('display', 'none');
+            button.parent().children('img').eq(pos(index+1)).css('display', 'block');
+            button.attr('data-index', index+1);
+            break
+    }
 }
 
 function openThread(reply) {

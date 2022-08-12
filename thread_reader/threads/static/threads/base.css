@@ -62,7 +62,7 @@ body {
 }
 
 #separador {
-  width: 100px;
+  width: 100%;
   height: 60px;
 }
 
@@ -157,8 +157,8 @@ body {
   padding: 15px;
   align-items: center;
   justify-content: center;
-  height: 250px;
-  width: 250px;
+  height: 350px;
+  width: 350px;
   background-color: #ffffea;
   border: 2px solid black;
   border-radius: 15px;
@@ -177,7 +177,9 @@ body {
 }
 
 .images-popup img {
-  width: 160px;
+  display: none;
+  max-width: 90%;
+  max-height: 90%;
   background-color: #555;
   color: #fff;
   border-radius: 6px;
@@ -186,8 +188,10 @@ body {
   z-index: 1;
 }
 
-.images-popup .show {
-  visibility: visible;
+.images-popup button {
+  border: none;
+  background: transparent;
+  color: transparent;
 }
 
 .locked-thread {
@@ -233,6 +237,11 @@ body {
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
   filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(96deg) brightness(102%) contrast(101%);
+}
+
+#espacio {
+  width: 100%;
+  height: 400px;
 }
 
 ::-webkit-scrollbar {
