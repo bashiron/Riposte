@@ -34,35 +34,41 @@ class Fetcher:
         if self.mode is M:
             res = self.tweet
         else:
-            res = self.__request_tweet(twt_id)
+            res = self.request_tweet(twt_id)
         return res
 
-    def __request_tweet(self, twt_id):
+    def request_tweet(self, twt_id):
         url = f'https://api.twitter.com/2/tweets/{twt_id}'
-        payload = {'tweet.fields': 'created_at,attachments,conversation_id,entities', 'expansions': 'author_id,attachments.media_keys', 'media.fields': 'url'}  #TODO agregar public_metrics
+        payload = self.tweet_payload()
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
         return requests.get(url, params=payload, headers=heads).json()
+
+    def tweet_payload(self):
+        return {'tweet.fields': 'created_at,attachments,conversation_id,entities', 'expansions': 'author_id,attachments.media_keys', 'media.fields': 'url'}  #TODO agregar public_metrics
 
     def obtain_thread(self, twid, token=None):
         if self.mode is M:
             res = self.thread.get()
         else:
-            res = self.__request_thread(twid, token)
+            res = self.request_thread(twid, token)
         return self.__compose_thread(res)
 
-    def __request_thread(self, twid, token):
+    def request_thread(self, twid, token):
         url = 'https://api.twitter.com/2/tweets/search/recent'
-        payload = {
-            'query': f'in_reply_to_tweet_id: {twid}', 
-            'tweet.fields': 'referenced_tweets,entities,attachments', 
-            'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
-            'media.fields': 'url', 
-            'user.fields': 'name,username'
-            }
+        payload = self.thread_payload(twid)
         if token is not None:
             payload['next_token'] = token
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
         return requests.get(url, params=payload, headers=heads).json()
+
+    def thread_payload(self, twid):
+        return {
+            'query': f'in_reply_to_tweet_id: {twid}',
+            'tweet.fields': 'referenced_tweets,entities,attachments',
+            'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
+            'media.fields': 'url',
+            'user.fields': 'name,username'
+            }
 
     # construimos un nuevo json iterando sobre la respuesta
     def __compose_thread(self, res):
@@ -108,7 +114,7 @@ class Fetcher:
                 'urls': tupla[2]
             }
 
-    # quita la mencion del texto
+    # quita las menciones autogeneradas del texto
     def __demention(self, texto, mentions):
         users = set(self.user_stack.queue)  # creo un conjunto sin repetidos a partir de la queue
         menciones = [(m['start'], m['end']) for m in mentions if (m['id'] in users)]
@@ -117,3 +123,13 @@ class Fetcher:
 
 
         return texto
+
+    def custom_request_tweet(self, twt_id, payload):
+        url = f'https://api.twitter.com/2/tweets/{twt_id}'
+        heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+        return requests.get(url, params=payload, headers=heads).json()
+
+    def custom_request_thread(self, payload):
+        url = 'https://api.twitter.com/2/tweets/search/recent'
+        heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+        return requests.get(url, params=payload, headers=heads).json()
