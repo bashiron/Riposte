@@ -3,6 +3,7 @@ from .twitter_requests import Fetcher, R
 import re
 from time import time
 import json as json_lib
+from random import randint
 
 
 def sequence(items):
@@ -13,7 +14,7 @@ def sequence(items):
     return seq
 
 # Trae un tweet o thread de la api y lo almacena en disco, con un procesado opcional de por medio.
-def generate(kind, twid, fun=(lambda x: x)):
+def generate(kind, twid, fun=(lambda y, x: x)):
     fetcher = Fetcher(R)
     res = None
     filename = re.search(r"^.+?(?=\.)", str(time())).group(0)    # basicamente un numero que no se repite
@@ -23,13 +24,13 @@ def generate(kind, twid, fun=(lambda x: x)):
             payload = fetcher.tweet_payload()
             simplify(payload, kind)
             res = fetcher.custom_request_tweet(twid, payload)
-            fun(res)
+            fun(kind, res)
 
         case 'thread':
             payload = fetcher.thread_payload(twid)
             simplify(payload, kind)
             res = fetcher.custom_request_thread(payload)
-            fun(res)
+            fun(kind, res)
 
     save_as_json(kind, res, filename)
 
@@ -49,13 +50,47 @@ def save_as_json(kind, data, name):
     with open( BASE_DIR / 'threads/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
         file.write(json_lib.dumps(data))
 
-def insert_pics(data):
-    pass
+# Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'thread'
+def insert_pics(kind, data):
+    match kind:
+        case 'tweet':
+            keys, pairs = make_pairs()
+            data['data']['attachments'] = {'media_keys': keys}
+            data['includes']['media'] = list(map(lambda x: {'media_key': x[1], 'type': 'photo', 'url': x[0]}, pairs))
+        case 'thread':
+            media = []
+            for obj in data['data']:
+                keys, pairs = make_pairs()
+                media.extend(pairs)
+                obj['attachments'] = {'media_keys': keys}
+
+            data['includes']['media'] = list(map(lambda x: {'media_key': x[1], 'type': 'photo', 'url': x[0]}, media))
+
+# Decide una cantidad entre 1 y 4 y crea los keys y los pares (key, url).
+def make_pairs():
+    amount = randint(1, 4)
+    pics = choose_pics(amount)
+    keys = keygen(amount)
+    pairs = zip(pics, keys)
+    return keys, pairs
+
+# Devuelve una lista de 'amount' cantidad de imagenes elegidas aleatoriamente de la variable global 'images'.
+def choose_pics(amount):
+    ls = []
+    for _ in range(amount):
+        rand = randint(0, len(images)-1)
+        ls.append(images[rand])
+    return ls
+
+# Genera una cantidad de 'amount' codigos de 8 digitos.
+def keygen(amount):
+    ls = []
+    for _ in range(amount):
+        ls.append(str(randint(0, 99999999)).zfill(8))
+    return ls
 
 
-
-
-imgs = [
+images = [
     'https://pbs.twimg.com/media/FaACOIIXoAM-SU_?format=jpg&name=large',
     'https://pbs.twimg.com/media/FZ-PNHqWYAADmm-?format=jpg&name=large',
     'https://pbs.twimg.com/media/FZ7cfkmXwAAxaNA?format=png&name=240x240',
