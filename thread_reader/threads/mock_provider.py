@@ -4,13 +4,13 @@ import re
 from time import time
 import json as json_lib
 from random import randint
+from queue import Queue, LifoQueue
 
 
 def sequence(items):
     seq = []
     for item in items:
-        with open( BASE_DIR / 'threads/json_mocks' / (item + '.json'), encoding='utf-8') as json:
-            seq.append(json_lib.loads(json.read()))
+        seq.append(load_as_json(item))
     return seq
 
 # Trae un tweet o thread de la api y lo almacena en disco, con un procesado opcional de por medio.
@@ -37,18 +37,39 @@ def generate(kind, twid, fun=(lambda y, x: x)):
 def simplify(payload, kind):
     match kind:
         case 'tweet':
-            payload['tweet.fields'] = payload['tweet.fields'].replace(',attachments', '').replace(',entities', '')
+            payload['tweet.fields'] = payload['tweet.fields'].replace(',attachments', '')
             payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
 
         case 'thread':
-            payload.pop('tweet.fields')
-            payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '').replace(',in_reply_to_user_id', '')
+            payload['tweet.fields'] = payload['tweet.fields'].replace(',attachments', '')
+            payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
 
-def save_as_json(kind, data, name):
-    with open( BASE_DIR / 'threads/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
-        file.write(json_lib.dumps(data))
+def remove_mentions(mode, kind, data):
+    match kind:
+        case 'tweet':
+            obj = data['data']
+            rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
+            obj.pop('entities')
+
+        case 'thread':
+            for obj in data['data']:
+                rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
+                obj.pop('entities')
+
+def rm_parents_mentions(obj):     #TODO hacer version que quite las menciones de todos los padres anteriores
+    # ya que las mentions estan ordenadas para borrar todas las menciones padre podria tomar todas las posiciones en orden hasta llegar a la mention que refiere al padre (comparando con in_reply_to_user_id)
+    mentions = obj['entities']['mentions']
+    pos = [m['end'] for m in mentions if (m['id'] == obj['in_reply_to_user_id'])][0] + 1
+    obj['text'] = obj['text'][pos:]
+
+def rm_all_mentions(obj):       #TODO esto solo funciona si todas las menciones estan al comienzo del texto
+    # deberia tomar la primer parte del texto (al start) y concatenarla con la segunda parte a partir del 'end', entonces se reconstruye el texto desapareciendo la mencion
+    mentions = obj['entities']['mentions']
+    pos_ls = [m['end'] - m['start'] + 1 for m in mentions]  # el (+1) es por el espacio entre mentions
+    for pos in pos_ls:
+        obj['text'] = obj['text'][pos:]
 
 # Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'thread'
 def insert_pics(kind, data):
@@ -89,6 +110,81 @@ def keygen(amount):
         ls.append(str(randint(0, 99999999)).zfill(8))
     return ls
 
+# Devuelve un LIFO de los jsons (en forma dict) con sus datos editados para reflejar los niveles de respuesta
+def build_thread(items):
+    que = Queue()
+    for json in [load_as_json(j) for j in items]:
+        que.put(json)
+    return linked_thread([], que)
+
+# Construye un LIFO de jsons (dicts) donde cada uno tiene añadidos datos de nivel
+def linked_thread(levels, jsons):
+    match jsons.empty():
+        case True:
+            return LifoQueue()
+        case False:
+            thread = jsons.get()    # esto quita un elemento del queue
+            que = linked_thread([level_data(thread)] + levels, jsons)
+            item = insert_level(thread, levels) if levels else thread
+            return f_put(que, item)
+
+def f_put(que, item):
+    que.put(item)
+    return que
+
+#
+def level_data(thread):
+    obj = thread['data'][0]
+    user = thread['includes']['users'][0]
+    return {
+        'user_id': obj['author_id'],
+        'twt_id': obj['id'],
+        'username': user['username']
+    }
+
+#
+def insert_level(thread, levels):
+    for obj in thread['data']:
+        obj['in_reply_to_user_id'] = levels[-1]['user_id']
+        entities_mention(obj, levels)
+        text_mention(obj, levels)
+
+    return thread
+
+def entities_mention(obj, levels):
+    obj['entities'] = {'mentions': []}
+    length_ls = [-1]    # de esta forma el primer start es 0 (-1 + 1)
+
+    for lv in levels:
+        length = len(lv['username'])
+        mention = {
+            'start': length_ls[-1] + 1,
+            'end': length + 1,
+            'username': lv['username'],
+            'id': lv['user_id']
+        }
+        obj['entities']['mentions'].append(mention)
+        length_ls.append(length + 1)
+
+def text_mention(obj, levels):
+    pos = 0
+
+    for lv in levels:
+        mention = '@' + lv['username'] + ' '
+        txt = obj['text']
+        obj['text'] = txt[:pos] + mention + txt[pos:]
+        pos += len(mention)
+
+# -------- almacenado --------
+
+def load_as_json(name):
+    with open(BASE_DIR / 'threads/json_mocks' / (name + '.json'), encoding='utf-8') as json:
+        ret = json_lib.loads(json.read())
+    return ret
+
+def save_as_json(kind, data, name):
+    with open( BASE_DIR / 'threads/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
+        file.write(json_lib.dumps(data))
 
 images = [
     'https://pbs.twimg.com/media/FaACOIIXoAM-SU_?format=jpg&name=large',

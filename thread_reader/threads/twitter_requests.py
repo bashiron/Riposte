@@ -44,7 +44,7 @@ class Fetcher:
         return requests.get(url, params=payload, headers=heads).json()
 
     def tweet_payload(self):
-        return {'tweet.fields': 'created_at,attachments,conversation_id,entities', 'expansions': 'author_id,attachments.media_keys', 'media.fields': 'url'}  #TODO agregar public_metrics
+        return {'tweet.fields': 'created_at,attachments,conversation_id,entities', 'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id', 'media.fields': 'url'}  #TODO agregar public_metrics
 
     def obtain_thread(self, twid, token=None):
         if self.mode is M:

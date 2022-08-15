@@ -25,7 +25,7 @@ def extract_id(url):
 
 def tweet(request, twid):
     fetcher.reset_userids()
-    fetcher.set_mocks(sequence(['tweet/fake/long_word', 'thread/real/1', 'thread/real/2', 'thread/real/3']))
+    fetcher.set_mocks(sequence(['gen/tweet/1660440075', 'gen/thread/1660440082']))
     res = fetcher.obtain_tweet(str(twid))
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
