@@ -5,6 +5,7 @@ from time import time
 import json as json_lib
 from random import randint
 from queue import Queue, LifoQueue
+import pdb
 
 
 def sequence(items):
@@ -58,18 +59,55 @@ def remove_mentions(mode, kind, data):
                 rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
                 obj.pop('entities')
 
-def rm_parents_mentions(obj):     #TODO hacer version que quite las menciones de todos los padres anteriores
-    # ya que las mentions estan ordenadas para borrar todas las menciones padre podria tomar todas las posiciones en orden hasta llegar a la mention que refiere al padre (comparando con in_reply_to_user_id)
+def rm_parents_mentions(obj):
     mentions = obj['entities']['mentions']
-    pos = [m['end'] for m in mentions if (m['id'] == obj['in_reply_to_user_id'])][0] + 1
-    obj['text'] = obj['text'][pos:]
+    pos_ls = list(map(lambda m: (m['start'], m['end']), mentions))
+    ed = last_mention_ending(pos_ls) + 1
+    obj['text'] = obj['text'][ed:]
 
-def rm_all_mentions(obj):       #TODO esto solo funciona si todas las menciones estan al comienzo del texto
-    # deberia tomar la primer parte del texto (al start) y concatenarla con la segunda parte a partir del 'end', entonces se reconstruye el texto desapareciendo la mencion
+def last_mention_ending(pos_ls):
+    shifted = shift(pos_ls)
+    consec = [consecutive(pos) for pos in shifted]
+    cons_pos = []
+
+    for i in range(len(pos_ls)):
+        if consec[i]:
+            cons_pos.append(pos_ls[i])
+        else:
+            break
+
+    try:
+        end = cons_pos[-1][1]
+    except IndexError:
+        end = 0
+    return end
+
+def shift(ls):
+    my_ls = ls.copy()
+    my_ls.append((None, None))
+    ret = []
+    prev = (None, None)
+
+    for item in my_ls:
+        ret.append((prev[1], item[0]))
+        prev = item
+
+    ret.pop()
+    return ret
+
+def consecutive(tup):
+    return tup[0] is None or tup[1] == tup[0] + 1
+
+def rm_all_mentions(obj):
     mentions = obj['entities']['mentions']
-    pos_ls = [m['end'] - m['start'] + 1 for m in mentions]  # el (+1) es por el espacio entre mentions
+    pos_ls = list(map(lambda m: (m['start'], m['end']), mentions))
+    gap = 0
+
     for pos in pos_ls:
-        obj['text'] = obj['text'][pos:]
+        st = pos[0] - gap
+        ed = pos[1] - gap + 1   # +1 por el espacio
+        obj['text'] = obj['text'][:st] + obj['text'][ed:]
+        gap += pos[1] - pos[0] + 1   # +1 por el espacio
 
 # Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'thread'
 def insert_pics(kind, data):
