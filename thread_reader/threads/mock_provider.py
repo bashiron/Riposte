@@ -15,7 +15,9 @@ def sequence(items):
     return seq
 
 # Trae un tweet o thread de la api y lo almacena en disco, con un procesado opcional de por medio.
-def generate(kind, twid, fun=(lambda y, x: x)):
+def generate(kind, twid, funs=None):
+    if funs is None:
+        funs = []
     fetcher = Fetcher(R)
     res = None
     filename = re.search(r"^.+?(?=\.)", str(time())).group(0)    # basicamente un numero que no se repite
@@ -25,13 +27,15 @@ def generate(kind, twid, fun=(lambda y, x: x)):
             payload = fetcher.tweet_payload()
             simplify(payload, kind)
             res = fetcher.custom_request_tweet(twid, payload)
-            fun(kind, res)
+            for fn in funs:
+                fn(kind, res)
 
         case 'thread':
             payload = fetcher.thread_payload(twid)
             simplify(payload, kind)
             res = fetcher.custom_request_thread(payload)
-            fun(kind, res)
+            for fn in funs:
+                fn(kind, res)
 
     save_as_json(kind, res, filename)
 
@@ -47,18 +51,32 @@ def simplify(payload, kind):
             payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
 
+#
 def remove_mentions(mode, kind, data):
     match kind:
         case 'tweet':
             obj = data['data']
+            parent_id = obj['in_reply_to_user_id']
+            obj.pop('in_reply_to_user_id')
             rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
             obj.pop('entities')
+            users = data['includes']['users']
+            data['includes']['users'] = [u for u in users if u['id'] != parent_id]
 
         case 'thread':
+            parent_id = data['data'][0]['in_reply_to_user_id']  # todos tienen el mismo parent
             for obj in data['data']:
                 rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
                 obj.pop('entities')
+                obj.pop('referenced_tweets')
+                obj.pop('in_reply_to_user_id')
 
+            users = data['includes']['users']
+            data['includes']['users'] = [u for u in users if u['id'] != parent_id]
+
+# TODO: si el texto es solo una mencion a un usuario (un amigo por ejemplo) la mencion es borrada porque esta justo despues de las menciones generadas automaticamente
+# TODO: a lo mejor se podria pedir informacion a la api para determinar cual de las menciones es la ultima de las generadas automaticamente (la del padre mas alto)
+# TODO: a lo mejor se puede usar el conversation_id
 def rm_parents_mentions(obj):
     mentions = obj['entities']['mentions']
     pos_ls = list(map(lambda m: (m['start'], m['end']), mentions))
@@ -134,6 +152,7 @@ def make_pairs():
     return keys, pairs
 
 # Devuelve una lista de 'amount' cantidad de imagenes elegidas aleatoriamente de la variable global 'images'.
+# TODO: darle la capacidad de no elegir ninguna imagen
 def choose_pics(amount):
     ls = []
     for _ in range(amount):
@@ -149,11 +168,18 @@ def keygen(amount):
     return ls
 
 # Devuelve un LIFO de los jsons (en forma dict) con sus datos editados para reflejar los niveles de respuesta
+# se construye asumiendo el flujo de siempre expandir la primer respuesta del thread
+# TODO: añadir la capacidad de tomar una lista de numeros entre 0 y 9 que indique el flujo de conversacion
 def build_thread(items):
+    tweet, *threads = items
+    tweet = load_as_json(tweet)
     que = Queue()
-    for json in [load_as_json(j) for j in items]:
+    for json in [load_as_json(j) for j in threads]:
         que.put(json)
-    return linked_thread([], que)
+    levels = [level_data(tweet, 'tweet')]
+    res = linked_thread(levels, que)
+    res.put(tweet)
+    return res
 
 # Construye un LIFO de jsons (dicts) donde cada uno tiene añadidos datos de nivel
 def linked_thread(levels, jsons):
@@ -163,30 +189,49 @@ def linked_thread(levels, jsons):
         case False:
             thread = jsons.get()    # esto quita un elemento del queue
             que = linked_thread([level_data(thread)] + levels, jsons)
-            item = insert_level(thread, levels) if levels else thread
+            item = insert_level(thread, levels)
             return f_put(que, item)
 
 def f_put(que, item):
     que.put(item)
     return que
 
-#
-def level_data(thread):
-    obj = thread['data'][0]
-    user = thread['includes']['users'][0]
-    return {
-        'user_id': obj['author_id'],
-        'twt_id': obj['id'],
-        'username': user['username']
-    }
+def level_data(json, kind='thread'):
+    match kind:
+        case 'tweet':
+            obj = json['data']
+            user = json['includes']['users'][0]
+            return {
+                'user_id': obj['author_id'],
+                'user_name': user['name'],
+                'user_username': user['username'],
+                'twt_id': obj['id']
+            }
+
+        case 'thread':
+            obj = json['data'][0]   # asumimos que eligiremos el primero porque si
+            user = json['includes']['users'][0]  # suponemos orden
+            return {
+                'user_id': obj['author_id'],
+                'user_name': user['name'],
+                'user_username': user['username'],
+                'twt_id': obj['id']
+            }
 
 #
 def insert_level(thread, levels):
+    last = levels[0]
     for obj in thread['data']:
-        obj['in_reply_to_user_id'] = levels[-1]['user_id']
+        obj['in_reply_to_user_id'] = last['user_id']
         entities_mention(obj, levels)
         text_mention(obj, levels)
 
+    user_obj = {
+        'id': last['user_id'],
+        'name': last['user_name'],
+        'username': last['user_username']
+    }
+    thread['includes']['users'].append(user_obj)
     return thread
 
 def entities_mention(obj, levels):
@@ -194,11 +239,11 @@ def entities_mention(obj, levels):
     length_ls = [-1]    # de esta forma el primer start es 0 (-1 + 1)
 
     for lv in levels:
-        length = len(lv['username'])
+        length = len(lv['user_username'])
         mention = {
             'start': length_ls[-1] + 1,
             'end': length + 1,
-            'username': lv['username'],
+            'username': lv['user_username'],
             'id': lv['user_id']
         }
         obj['entities']['mentions'].append(mention)
@@ -208,7 +253,7 @@ def text_mention(obj, levels):
     pos = 0
 
     for lv in levels:
-        mention = '@' + lv['username'] + ' '
+        mention = '@' + lv['user_username'] + ' '
         txt = obj['text']
         obj['text'] = txt[:pos] + mention + txt[pos:]
         pos += len(mention)
