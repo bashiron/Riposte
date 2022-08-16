@@ -168,8 +168,9 @@ def keygen(amount):
     return ls
 
 # Devuelve un LIFO de los jsons (en forma dict) con sus datos editados para reflejar los niveles de respuesta
-# se construye asumiendo el flujo de siempre expandir la primer respuesta del thread
-# TODO: añadir la capacidad de tomar una lista de numeros entre 0 y 9 que indique el flujo de conversacion
+# TODO: por ahora se construye asumiendo el flujo de siempre expandir la primer respuesta del thread
+# TODO: hacer que en el Fetcher al pedir un thread esas respuestas vengan con los datos de nivel del clickeado
+# TODO: y si se expande un thread (horizontalmente) solo se entrega un thread sin insertar info sobre niveles
 def build_thread(items):
     tweet, *threads = items
     tweet = load_as_json(tweet)
@@ -236,18 +237,18 @@ def insert_level(thread, levels):
 
 def entities_mention(obj, levels):
     obj['entities'] = {'mentions': []}
-    length_ls = [-1]    # de esta forma el primer start es 0 (-1 + 1)
+    offset = 0
 
     for lv in levels:
         length = len(lv['user_username'])
         mention = {
-            'start': length_ls[-1] + 1,
-            'end': length + 1,
+            'start': offset,
+            'end': offset + 1 + length,  # +1 por el arroba
             'username': lv['user_username'],
             'id': lv['user_id']
         }
         obj['entities']['mentions'].append(mention)
-        length_ls.append(length + 1)
+        offset += (1 + length + 1)    # +1 por el arroba y +1 por el espacio
 
 def text_mention(obj, levels):
     pos = 0

@@ -20,15 +20,9 @@ class Fetcher:
         for t in thr:
             self.thread.put(t)
 
-    def put_userid(self, usid):
-        self.user_stack.put(usid)
-
     def del_userids(self, num):
         for i in range(num):
             self.user_stack.get()
-
-    def reset_userids(self):
-        self.user_stack = LifoQueue()
 
     def obtain_tweet(self, twt_id):
         if self.mode is M:
@@ -51,6 +45,7 @@ class Fetcher:
             res = self.thread.get()
         else:
             res = self.request_thread(twid, token)
+        self.user_stack.put(res['data'][0]['in_reply_to_user_id'])
         return self.__compose_thread(res)
 
     def request_thread(self, twid, token):
@@ -72,8 +67,6 @@ class Fetcher:
 
     # construimos un nuevo json iterando sobre la respuesta
     def __compose_thread(self, res):
-        parent = res['data'][0]['in_reply_to_user_id']
-
         try:
             media = res['includes']['media']
         except KeyError:
@@ -82,14 +75,12 @@ class Fetcher:
         conjunto = self.__zip_data(res['data'], res['includes']['users'], media, res['meta']['result_count'])
         merged = list(map(self.__merge_tweet_data, conjunto))  # creamos nueva lista con datos obtenidos al iterar sobre el conjunto
 
-
-
         try:
             token = res['meta']['next_token']
         except KeyError:
             token = False
 
-        return {'token': token, 'items': merged, 'parent': parent}
+        return {'token': token, 'items': merged}
 
     def __zip_data(self, data, users, media, count):
         conjunto = []
@@ -105,8 +96,7 @@ class Fetcher:
 
     def __merge_tweet_data(self, tupla):
         return {
-                # 'text': self.__demention(tupla[0]['text'], tupla[0]['entities']['mentions']),
-                'text': tupla[0]['text'],
+                'text': self.__demention(tupla[0]['text'], tupla[0]['entities']['mentions']),
                 'id': tupla[0]['id'],
                 'user_id': tupla[1]['id'],
                 'username': tupla[1]['username'],
@@ -115,14 +105,19 @@ class Fetcher:
             }
 
     # quita las menciones autogeneradas del texto
-    def __demention(self, texto, mentions):
+    # TODO: por ahora solo funciona si el primer tweet no es respuesta de ningun otro, sino quedan menciones sin borrar
+    def __demention(self, text, mentions):
         users = set(self.user_stack.queue)  # creo un conjunto sin repetidos a partir de la queue
-        menciones = [(m['start'], m['end']) for m in mentions if (m['id'] in users)]
-        print('hola')
+        pos_ls = [(m['start'], m['end']) for m in mentions if (m['id'] in users)]
+        gap = 0
 
+        for pos in pos_ls:
+            st = pos[0] - gap
+            ed = pos[1] - gap + 1  # +1 por el espacio
+            text = text[:st] + text[ed:]
+            gap += pos[1] - pos[0] + 1  # +1 por el espacio
 
-
-        return texto
+        return text
 
     def custom_request_tweet(self, twt_id, payload):
         url = f'https://api.twitter.com/2/tweets/{twt_id}'

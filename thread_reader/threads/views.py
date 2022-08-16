@@ -6,7 +6,6 @@ from .twitter_requests import R, M, Fetcher
 from .mock_provider import sequence
 
 tweet_ctx = {'aux': {}}
-fetcher = Fetcher(M)    # definir si usar el modo real o mock
 
 def home(request):
     if request.method == 'POST':
@@ -24,8 +23,9 @@ def extract_id(url):
     return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
 def tweet(request, twid):
-    fetcher.reset_userids()
-    fetcher.set_mocks(sequence(['gen/tweet/1660440075', 'gen/thread/1660440082']))
+    global fetcher
+    fetcher = Fetcher(M)    # definir si usar el modo real o mock
+    fetcher.set_mocks(sequence(['gen/tweet/t1', 'gen/thread/t2', 'gen/thread/t3', 'gen/thread/t4']))
     res = fetcher.obtain_tweet(str(twid))
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
@@ -46,7 +46,6 @@ def trim_date(date):
 def new_thread(request):
     twid = request.GET['twid']
     res = fetcher.obtain_thread(twid)
-    fetcher.put_userid(res['parent'])
     return JsonResponse(res)
 
 # Ajax - mas respuestas en un thread
