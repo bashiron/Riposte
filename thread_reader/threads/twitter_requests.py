@@ -1,3 +1,4 @@
+from .mention_parser import rm_auto_mentions
 import requests, environ
 from queue import Queue, LifoQueue
 
@@ -45,7 +46,7 @@ class Fetcher:
             res = self.thread.get()
         else:
             res = self.request_thread(twid, token)
-        self.user_stack.put(res['data'][0]['in_reply_to_user_id'])
+        self.user_stack.put(res['data'][0]['in_reply_to_user_id'])  # TODO: esto solo lo deberia hacer cuando el token es None (nuevo thread)
         return self.__compose_thread(res)
 
     def request_thread(self, twid, token):
@@ -59,7 +60,7 @@ class Fetcher:
     def thread_payload(self, twid):
         return {
             'query': f'in_reply_to_tweet_id: {twid}',
-            'tweet.fields': 'referenced_tweets,entities,attachments',
+            'tweet.fields': 'entities,attachments',
             'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
             'media.fields': 'url',
             'user.fields': 'name,username'
@@ -96,28 +97,13 @@ class Fetcher:
 
     def __merge_tweet_data(self, tupla):
         return {
-                'text': self.__demention(tupla[0]['text'], tupla[0]['entities']['mentions']),
+                'text': rm_auto_mentions(tupla[0]['text'], tupla[0]['entities']['mentions'], set(self.user_stack.queue)),
                 'id': tupla[0]['id'],
                 'user_id': tupla[1]['id'],
                 'username': tupla[1]['username'],
                 'name': tupla[1]['name'],
                 'urls': tupla[2]
             }
-
-    # quita las menciones autogeneradas del texto
-    # TODO: por ahora solo funciona si el primer tweet no es respuesta de ningun otro, sino quedan menciones sin borrar
-    def __demention(self, text, mentions):
-        users = set(self.user_stack.queue)  # creo un conjunto sin repetidos a partir de la queue
-        pos_ls = [(m['start'], m['end']) for m in mentions if (m['id'] in users)]
-        gap = 0
-
-        for pos in pos_ls:
-            st = pos[0] - gap
-            ed = pos[1] - gap + 1  # +1 por el espacio
-            text = text[:st] + text[ed:]
-            gap += pos[1] - pos[0] + 1  # +1 por el espacio
-
-        return text
 
     def custom_request_tweet(self, twt_id, payload):
         url = f'https://api.twitter.com/2/tweets/{twt_id}'

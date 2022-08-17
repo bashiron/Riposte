@@ -1,11 +1,11 @@
 from thread_reader.settings import BASE_DIR
 from .twitter_requests import Fetcher, R
+from .mention_parser import *
 import re
 from time import time
 import json as json_lib
 from random import randint
 from queue import Queue, LifoQueue
-import pdb
 
 
 def sequence(items):
@@ -58,7 +58,10 @@ def remove_mentions(mode, kind, data):
             obj = data['data']
             parent_id = obj['in_reply_to_user_id']
             obj.pop('in_reply_to_user_id')
-            rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
+            if mode == 'parent':
+                obj['text'] = rm_parents_mentions(obj['text'], obj['entities']['mentions'])
+            else:
+                obj['text'] = rm_all_mentions(obj['text'], obj['entities']['mentions'])
             obj.pop('entities')
             users = data['includes']['users']
             data['includes']['users'] = [u for u in users if u['id'] != parent_id]
@@ -66,66 +69,12 @@ def remove_mentions(mode, kind, data):
         case 'thread':
             parent_id = data['data'][0]['in_reply_to_user_id']  # todos tienen el mismo parent
             for obj in data['data']:
-                rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj)
+                rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj['text'], obj['entities']['mentions'])
                 obj.pop('entities')
-                obj.pop('referenced_tweets')
                 obj.pop('in_reply_to_user_id')
 
             users = data['includes']['users']
             data['includes']['users'] = [u for u in users if u['id'] != parent_id]
-
-# TODO: si el texto es solo una mencion a un usuario (un amigo por ejemplo) la mencion es borrada porque esta justo despues de las menciones generadas automaticamente
-# TODO: a lo mejor se podria pedir informacion a la api para determinar cual de las menciones es la ultima de las generadas automaticamente (la del padre mas alto)
-# TODO: a lo mejor se puede usar el conversation_id
-def rm_parents_mentions(obj):
-    mentions = obj['entities']['mentions']
-    pos_ls = list(map(lambda m: (m['start'], m['end']), mentions))
-    ed = last_mention_ending(pos_ls) + 1
-    obj['text'] = obj['text'][ed:]
-
-def last_mention_ending(pos_ls):
-    shifted = shift(pos_ls)
-    consec = [consecutive(pos) for pos in shifted]
-    cons_pos = []
-
-    for i in range(len(pos_ls)):
-        if consec[i]:
-            cons_pos.append(pos_ls[i])
-        else:
-            break
-
-    try:
-        end = cons_pos[-1][1]
-    except IndexError:
-        end = 0
-    return end
-
-def shift(ls):
-    my_ls = ls.copy()
-    my_ls.append((None, None))
-    ret = []
-    prev = (None, None)
-
-    for item in my_ls:
-        ret.append((prev[1], item[0]))
-        prev = item
-
-    ret.pop()
-    return ret
-
-def consecutive(tup):
-    return tup[0] is None or tup[1] == tup[0] + 1
-
-def rm_all_mentions(obj):
-    mentions = obj['entities']['mentions']
-    pos_ls = list(map(lambda m: (m['start'], m['end']), mentions))
-    gap = 0
-
-    for pos in pos_ls:
-        st = pos[0] - gap
-        ed = pos[1] - gap + 1   # +1 por el espacio
-        obj['text'] = obj['text'][:st] + obj['text'][ed:]
-        gap += pos[1] - pos[0] + 1   # +1 por el espacio
 
 # Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'thread'
 def insert_pics(kind, data):
@@ -153,6 +102,7 @@ def make_pairs():
 
 # Devuelve una lista de 'amount' cantidad de imagenes elegidas aleatoriamente de la variable global 'images'.
 # TODO: darle la capacidad de no elegir ninguna imagen
+# TODO: hacer que no use imagenes repetidas
 def choose_pics(amount):
     ls = []
     for _ in range(amount):
@@ -234,30 +184,6 @@ def insert_level(thread, levels):
     }
     thread['includes']['users'].append(user_obj)
     return thread
-
-def entities_mention(obj, levels):
-    obj['entities'] = {'mentions': []}
-    offset = 0
-
-    for lv in levels:
-        length = len(lv['user_username'])
-        mention = {
-            'start': offset,
-            'end': offset + 1 + length,  # +1 por el arroba
-            'username': lv['user_username'],
-            'id': lv['user_id']
-        }
-        obj['entities']['mentions'].append(mention)
-        offset += (1 + length + 1)    # +1 por el arroba y +1 por el espacio
-
-def text_mention(obj, levels):
-    pos = 0
-
-    for lv in levels:
-        mention = '@' + lv['user_username'] + ' '
-        txt = obj['text']
-        obj['text'] = txt[:pos] + mention + txt[pos:]
-        pos += len(mention)
 
 # -------- almacenado --------
 
