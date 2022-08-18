@@ -10,18 +10,22 @@ body {
   margin-top: 5rem;
 }
 
-.tweet-input {
+.home-container {
   position: absolute;
   top: 25%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }
 
-.tweet-input input[type=url] {
+.home-container form {
+  
+}
+
+.home-container form input[type=url] {
   height: 50px;
   width: 500px;
 }
-.tweet-input input[type=submit] {
+.home-container form input[type=submit] {
   margin-left: 12px;
 }
 

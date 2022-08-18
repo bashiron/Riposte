@@ -52,25 +52,35 @@ def simplify(payload, kind):
             payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
 
-#
+# TODO: al borrar las entities se pierden los datos de url que no son menciones
 def remove_mentions(mode, kind, data):
     match kind:
         case 'tweet':
             obj = data['data']
-            parent_id = obj['in_reply_to_user_id']
-            obj.pop('in_reply_to_user_id')
-            if mode == 'parent':
-                obj['text'] = rm_parents_mentions(obj['text'], obj['entities']['mentions'])
+            try:
+                parent_id = obj['in_reply_to_user_id']
+            except KeyError:
+                try:
+                    obj.pop('entities')
+                except KeyError:
+                    pass
             else:
-                obj['text'] = rm_all_mentions(obj['text'], obj['entities']['mentions'])
-            obj.pop('entities')
-            users = data['includes']['users']
-            data['includes']['users'] = [u for u in users if u['id'] != parent_id]
+                obj.pop('in_reply_to_user_id')
+                if mode == 'parent':
+                    obj['text'] = rm_parents_mentions(obj['text'], obj['entities']['mentions'])
+                else:
+                    obj['text'] = rm_all_mentions(obj['text'], obj['entities']['mentions'])
+                obj.pop('entities')
+                users = data['includes']['users']
+                data['includes']['users'] = [u for u in users if u['id'] != parent_id]
 
         case 'thread':
             parent_id = data['data'][0]['in_reply_to_user_id']  # todos tienen el mismo parent
             for obj in data['data']:
-                rm_parents_mentions(obj) if mode == 'parent' else rm_all_mentions(obj['text'], obj['entities']['mentions'])
+                if mode == 'parent':
+                    obj['text'] = rm_parents_mentions(obj['text'], obj['entities']['mentions'])
+                else:
+                    obj['text'] = rm_all_mentions(obj['text'], obj['entities']['mentions'])
                 obj.pop('entities')
                 obj.pop('in_reply_to_user_id')
 
@@ -193,15 +203,18 @@ def save_as_json(kind, data, name):
     with open( BASE_DIR / 'threads/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
         file.write(json_lib.dumps(data))
 
+
 images = [
-    'https://pbs.twimg.com/media/FaACOIIXoAM-SU_?format=jpg&name=large',
-    'https://pbs.twimg.com/media/FZ-PNHqWYAADmm-?format=jpg&name=large',
-    'https://pbs.twimg.com/media/FZ7cfkmXwAAxaNA?format=png&name=240x240',
-    'https://pbs.twimg.com/media/FaB_og7XEAE4SIa?format=jpg&name=4096x4096',
-    'https://pbs.twimg.com/media/FZ7CHZOaIAA-I42?format=png&name=900x900',
-    'https://pbs.twimg.com/media/FZ-F4o7akAElSKk?format=jpg&name=large',
-    'https://pbs.twimg.com/media/FaBrs1VacAEpTOq?format=jpg&name=medium',
-    'https://pbs.twimg.com/media/FZ93ToJUcAAtQRs?format=jpg&name=medium',
-    'https://pbs.twimg.com/media/FaCXJWdaUAE0LK2?format=jpg&name=4096x4096',
-    'https://pbs.twimg.com/media/FZzIihWacAAjlaF?format=jpg&name=large'
+    'https://pbs.twimg.com/media/FaACOIIXoAM-SU_?format=jpg',
+    'https://pbs.twimg.com/media/FZ-PNHqWYAADmm-?format=jpg',
+    'https://pbs.twimg.com/media/FZ7cfkmXwAAxaNA?format=png',
+    'https://pbs.twimg.com/media/FaB_og7XEAE4SIa?format=jpg',
+    'https://pbs.twimg.com/media/FZ7CHZOaIAA-I42?format=png',
+    'https://pbs.twimg.com/media/FZ-F4o7akAElSKk?format=jpg',
+    'https://pbs.twimg.com/media/FaBrs1VacAEpTOq?format=jpg',
+    'https://pbs.twimg.com/media/FZ93ToJUcAAtQRs?format=jpg',
+    'https://pbs.twimg.com/media/FaCXJWdaUAE0LK2?format=jpg',
+    'https://pbs.twimg.com/media/FZzIihWacAAjlaF?format=jpg'
 ]
+
+images = [img + '&name=small' for img in images]

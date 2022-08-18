@@ -66,6 +66,7 @@ class Fetcher:
             'media.fields': 'url',
             'user.fields': 'name,username',
             'sort_order': 'relevancy'
+            # 'sort_order': 'recency'
             }
 
     # construimos un nuevo json iterando sobre la respuesta
