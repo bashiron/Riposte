@@ -1,6 +1,7 @@
 from thread_reader.settings import BASE_DIR
 from .twitter_requests import Fetcher, R
 from .mention_parser import *
+from .misc import f_put
 import re
 from time import time
 import json as json_lib
@@ -142,10 +143,6 @@ def linked_thread(levels, jsons):
             que = linked_thread([level_data(thread)] + levels, jsons)
             item = insert_level(thread, levels)
             return f_put(que, item)
-
-def f_put(que, item):
-    que.put(item)
-    return que
 
 def level_data(json, kind='thread'):
     match kind:

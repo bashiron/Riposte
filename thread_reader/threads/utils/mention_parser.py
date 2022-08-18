@@ -1,3 +1,5 @@
+from .misc import shift
+
 # TODO: si el texto es solo una mencion a un usuario (un amigo por ejemplo) la mencion es borrada porque esta justo despues de las menciones generadas automaticamente
 # TODO: a lo mejor se podria pedir informacion a la api para determinar cual de las menciones es la ultima de las generadas automaticamente (la del padre mas alto)
 # TODO: a lo mejor se puede usar el conversation_id
@@ -22,19 +24,6 @@ def last_mention_ending(pos_ls):
     except IndexError:
         end = 0
     return end
-
-def shift(ls):
-    my_ls = ls.copy()
-    my_ls.append((None, None))
-    ret = []
-    prev = (None, None)
-
-    for item in my_ls:
-        ret.append((prev[1], item[0]))
-        prev = item
-
-    ret.pop()
-    return ret
 
 def consecutive(tup):
     return tup[0] is None or tup[1] == tup[0] + 1

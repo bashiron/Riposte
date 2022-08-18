@@ -46,7 +46,8 @@ class Fetcher:
             res = self.thread.get()
         else:
             res = self.request_thread(twid, token)
-        self.user_stack.put(res['data'][0]['in_reply_to_user_id'])  # TODO: esto solo lo deberia hacer cuando el token es None (nuevo thread)
+        if token is None:
+            self.user_stack.put(res['data'][0]['in_reply_to_user_id'])
         return self.__compose_thread(res)
 
     def request_thread(self, twid, token):
@@ -63,7 +64,8 @@ class Fetcher:
             'tweet.fields': 'entities,attachments',
             'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
             'media.fields': 'url',
-            'user.fields': 'name,username'
+            'user.fields': 'name,username',
+            'sort_order': 'relevancy'
             }
 
     # construimos un nuevo json iterando sobre la respuesta
@@ -96,8 +98,12 @@ class Fetcher:
         return [m['url'] for m in media if (m['media_key'] in keys) and m['type'] == 'photo']
 
     def __merge_tweet_data(self, tupla):
+        try:
+            mentions = tupla[0]['entities']['mentions']
+        except KeyError:
+            mentions = []
         return {
-                'text': rm_auto_mentions(tupla[0]['text'], tupla[0]['entities']['mentions'], set(self.user_stack.queue)),
+                'text': rm_auto_mentions(tupla[0]['text'], mentions, set(self.user_stack.queue)),
                 'id': tupla[0]['id'],
                 'user_id': tupla[1]['id'],
                 'username': tupla[1]['username'],

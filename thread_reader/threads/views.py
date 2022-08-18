@@ -2,8 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import re
 from .forms import LinkForm
-from .twitter_requests import R, M, Fetcher
-from .mock_provider import sequence
+from utils.twitter_requests import R, Fetcher
+from utils.mock_provider import sequence
 
 tweet_ctx = {'aux': {}}
 
@@ -24,7 +24,7 @@ def extract_id(url):
 
 def tweet(request, twid):
     global fetcher
-    fetcher = Fetcher(M)    # definir si usar el modo real o mock
+    fetcher = Fetcher(R)    # definir si usar el modo real o mock
     fetcher.set_mocks(sequence(['gen/tweet/t1', 'gen/thread/t2', 'gen/thread/t3', 'gen/thread/t4']))
     res = fetcher.obtain_tweet(str(twid))
     return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
