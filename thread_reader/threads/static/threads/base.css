@@ -29,6 +29,21 @@ body {
   margin-left: 12px;
 }
 
+.error-message {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 550px;
+  margin-top: 25px;
+  font-size: larger;
+  color: red;
+}
+
+.error-message p {
+  position: relative;
+  text-align: center;
+}
+
 #base-tweet {
   background: var(--article-color);
   padding: 10px 20px;
