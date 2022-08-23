@@ -1,10 +1,12 @@
 from .mention_parser import rm_auto_mentions
-import requests, environ
+import requests, json
 from queue import Queue, LifoQueue
 
 M = 'mock'
 R = 'real'
-env = environ.Env()
+
+with open('/etc/config.json') as config_file:
+    config = json.load(config_file)
 
 class Fetcher:
     """Provee metodos para interactuar con algunos endpoints del api de Twitter.
@@ -35,7 +37,7 @@ class Fetcher:
     def request_tweet(self, twt_id):
         url = f'https://api.twitter.com/2/tweets/{twt_id}'
         payload = self.tweet_payload()
-        heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+        heads = {'Authorization': f'Bearer { config["BEARER_TOKEN"] }'}
         return requests.get(url, params=payload, headers=heads).json()
 
     def tweet_payload(self):
@@ -55,7 +57,7 @@ class Fetcher:
         payload = self.thread_payload(twid)
         if token is not None:
             payload['next_token'] = token
-        heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+        heads = {'Authorization': f'Bearer { config["BEARER_TOKEN"] }'}
         return requests.get(url, params=payload, headers=heads).json()
 
     def thread_payload(self, twid):
@@ -114,10 +116,10 @@ class Fetcher:
 
     def custom_request_tweet(self, twt_id, payload):
         url = f'https://api.twitter.com/2/tweets/{twt_id}'
-        heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+        heads = {'Authorization': f'Bearer { config["BEARER_TOKEN"] }'}
         return requests.get(url, params=payload, headers=heads).json()
 
     def custom_request_thread(self, payload):
         url = 'https://api.twitter.com/2/tweets/search/recent'
-        heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
+        heads = {'Authorization': f'Bearer { config["BEARER_TOKEN"] }'}
         return requests.get(url, params=payload, headers=heads).json()

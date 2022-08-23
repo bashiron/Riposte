@@ -1,12 +1,12 @@
-let media_url = undefined;
+let static_url = undefined;
 let more_url = undefined;
 let open_url = undefined;
 let close_url = undefined;
 
 let art, links;    //variables para debugear en consola
 
-function storeUrls(media, open, more, close) {
-    media_url = media;
+function storeUrls(static, open, more, close) {
+    static_url = static;
     open_url = open;
     more_url = more;
     close_url = close;
@@ -230,7 +230,7 @@ function openThread(reply) {
                         'class': 'load-more btn btn-primary btn-lg',
                         'data-token': res.token,
                         html: $('<img/>', {
-                            src: media_url + '/icons/circle-plus-solid.svg',
+                            src: static_url + 'icons/circle-plus-solid.svg',
                             alt: 'cargar mas'
                         })
                     });

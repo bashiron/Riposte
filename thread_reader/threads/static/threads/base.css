@@ -15,6 +15,7 @@ body {
   top: 25%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
+  min-height: 80px;
 }
 
 .home-container form {
