@@ -10,8 +10,46 @@ body {
   margin-top: 5rem;
 }
 
+.topnav {
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+}
+
+.topnav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.topnav li {
+  float: left;
+}
+
+.topnav .r-nav {
+  float: right;
+}
+
+.topnav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav li a:hover {
+  background-color: #111;
+}
+
 .home-container {
   position: absolute;
+  width: 700px;
   top: 25%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
@@ -43,6 +81,11 @@ body {
 .error-message p {
   position: relative;
   text-align: center;
+}
+
+.home-container p {
+  /* position: absolute; */
+
 }
 
 #base-tweet {

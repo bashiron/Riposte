@@ -30,7 +30,7 @@ SECRET_KEY = config['DJANGO_SECRET']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['139.144.17.75']
+ALLOWED_HOSTS = ['threadreader.xyz', 'www.threadreader.xyz', '139.144.17.75', 'localhost']
 
 
 # Application definition

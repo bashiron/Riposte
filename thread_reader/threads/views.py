@@ -23,17 +23,18 @@ def extract_id(url):
     rx_btn = r"^(?:[^\/]*\/){5}([^\/]*.+?(?=\?))"   #regex para links copiados con "copy link to tweet" (tienen un '?')
     return re.search(rx_btn if url.find('?') != -1 else rx_url, url).group(1)
 
+
 def process_request(request, form, twid):
+    mode = M    # definir si usar el modo real o mock
     root, recent = False, False
     global fetcher
-    fetcher = Fetcher(R)    # definir si usar el modo real o mock
+    fetcher = Fetcher(mode)
     fetcher.set_mocks(sequence(['gen/tweet/t1', 'gen/thread/t2', 'gen/thread/t3', 'gen/thread/t4']))
     res = fetcher.obtain_tweet(twid)
-    try:
-        res['data']['in_reply_to_user_id']
-    except KeyError:
-        root = True
-    recent = is_recent(res['data']['created_at'])
+    if mode == R:
+        root, recent = eval_link(res, root)
+    else:
+        root, recent = True, True
 
     if root and recent:
         fill_tweet_context(tweet_ctx, res)
@@ -43,8 +44,16 @@ def process_request(request, form, twid):
     if root and not recent:
         response = render(request, 'threads/home.html', {'form': form, 'error': 'el tweet insertado es mas antiguo que una semana'})
     if not (root or recent):
-        response = render(request, 'threads/home.html', {'form': form, 'error': 'NINGUNO'})
+        response = render(request, 'threads/home.html', {'form': form, 'error': 'el tweet insertado no es un tweet raiz y ademas es mas antiguo que una semana'})
     return response
+
+def eval_link(res, root):
+    try:
+        res['data']['in_reply_to_user_id']
+    except KeyError:
+        root = True
+    recent = is_recent(res['data']['created_at'])
+    return root, recent
 
 def is_recent(raw_twt_date):
     twt_date = datetime.strptime(raw_twt_date, "%Y-%m-%dT%H:%M:%S.%fZ").astimezone(timezone.utc)
@@ -54,7 +63,6 @@ def is_recent(raw_twt_date):
 
 def tweet(request, twid):
     return render(request, 'threads/tweet.html', tweet_ctx)
-    # return render(request, 'threads/tweet.html', fill_tweet_context(tweet_ctx, res))
 
 def fill_tweet_context(ctx, res):
     ctx['name'] = res['includes']['users'][0]['name']
