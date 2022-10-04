@@ -5,6 +5,7 @@ let close_url = undefined;
 
 let art, links;    //variables para debugear en consola
 
+//guardo los urls de django porque no puedo usar el tag de static o url en javascript
 function storeUrls(static, open, more, close) {
     static_url = static;
     open_url = open;
@@ -12,6 +13,10 @@ function storeUrls(static, open, more, close) {
     close_url = close;
 }
 
+/**
+ * Carga mas respuestas dentro del mismo nivel de conversacion.
+ * @param  {jQuery} boton el boton que fue activado
+ */
 function moreReplies(boton) {
     const nivel = boton.parent().parent();
     const fila = nivel.children().eq(0) //la lista de tweets
@@ -34,26 +39,37 @@ function moreReplies(boton) {
                 } else {
                     boton.remove();
                 }
-                fila.append(tweets);
-                popups.append(pops);
+                fila.append(tweets);    //acomodo los tweets al final de la fila
+                popups.append(pops);    //lo mismo con los popups
                 updateSupports(extractLevel(nivel));
             }
         }
     );
 };
 
-//genera el html y define los handlers a eventos
+/**
+ * Genera el html y define los handlers a eventos para los tweets.
+ * @param  {json} res respuesta en formato json
+ * @return {[jQuery]}   tweets preparados
+ */
 function prepareTweets(res) {
     const tweets = generateTweets(res);
     tweets.forEach(t => setTweetHandlers(t));
     return tweets;
 }
 
+/**
+ * Setea los handlers de los tweets.
+ */
 function setTweetHandlers(tweet) {
     setClickHandler(tweet);
     setMouseHandlers(tweet);
 }
 
+/**
+ * Setea el handler de click.
+ * Solo abre un nuevo thread si el tweet no es el activo, sino lo cierra.
+ */
 function setClickHandler(tweet) {
     tweet.click(function () {
         if (!$(this).hasClass('active')) {
@@ -64,16 +80,19 @@ function setClickHandler(tweet) {
     });
 }
 
+/**
+ * Setea los handlers de mouse. Al entrar el mouse se muestra y posiciona el popup y su imagen actual, al salir el mouse se esconde el popup.
+ */
 function setMouseHandlers(tweet) {
     tweet.mouseenter(function () {
         const popup = getPopup($(this));
         const index = popup.children().eq(-1).attr('data-index');
         $(this).addClass('focused');
-        if (popup[0]) {
+        if (popup[0]) {     //esta condicion evalua si existe el elemento
             popup.css('display', 'flex');
             positionPopup(popup, $(this));
             popup.children('img').eq(index).css('display', 'block');
-            popup.find('button')[0].focus();
+            popup.find('button')[0].focus();    //el boton invisible se focusea para poder atrapar las teclas presionadas
         }
     });
     tweet.mouseleave(function () {
@@ -85,18 +104,31 @@ function setMouseHandlers(tweet) {
     });
 }
 
+/**
+ * Devuelve el popup asociado a un tweet.
+ */
 function getPopup(tweet) {
     return tweet.parent().next().find($(`[data-id="${tweet.attr('data-id')}"]`));
 }
 
+/**
+ * Posiciona el popup centrado debajo del tweet asociado.
+ * @param  {jQuery} popup el popup a posicionar
+ * @param  {jQuery} tweet el tweet asociado
+ */
 function positionPopup(popup, tweet) {
-    const rect = tweet[0].getBoundingClientRect();
+    const rect = tweet[0].getBoundingClientRect();  //esta variable almacena info sobre el tamaño y posicion del tweet
     const left = rect.left;
     const width = rect.width;
     const pop_width = popup[0].clientWidth;
     popup.css('left', `${left + (width/2) - (pop_width/2)}px`); //la resta de las mitades de los width son para centrar el popup
 }
 
+/**
+ * Genera el HTML de los tweets, tambien setea los handlers necesarios.
+ * @param  {json} res respuesta en formato json
+ * @return {[html]} una lista con los elementos HTML que representan a los tweets
+ */
 function generateTweets(res) {
     const elems = [];
     for (let i = 0; i < res.items.length; i++) {
@@ -132,14 +164,17 @@ function generateTweets(res) {
     return elems;
 }
 
+/**
+ * Setea los handlers de la metadata.
+ */
 function setMetadataHandlers(meta) {
-    meta.hover(
-        function () {
+    meta.hover(     //el evento del mouse sobre el elemento
+        function () {   //entra el mouse
             $(this).css('overflow', 'visible');
             $(this).find('.support').css('visibility', 'visible');
             $(this).find('.user-name').css('color', '#617ea7');
         },
-        function () {
+        function () {   //sale el mouse
             $(this).css('overflow', 'hidden');
             $(this).find('.support').css('visibility', 'hidden');
             $(this).find('.user-name').css('color', 'black');
@@ -147,19 +182,27 @@ function setMetadataHandlers(meta) {
     );
 }
 
+/**
+ * Prepara los popups.
+ */
 function preparePopups(res) {
     const pops = generatePopups(res);
     return pops;
 }
 
+/**
+ * Genera el HTML de los popups, tambien setea los handlers necesarios.
+ * @param  {json} res respuesta en formato json
+ * @return {[html]} una lista con los elementos HTML que representan a los popups
+ */
 function generatePopups(res) {
     const elems = [];
     for (let i = 0; i < res.items.length; i++) {
-        if (res.items[i].urls[0]) {     //solo mostrar popup si el tweet tiene media
+        if (res.items[i].urls[0]) {     //solo crear popup si el tweet tiene media
             const imgs = res.items[i].urls.map(url => (
                 $('<img/>', {src: url})
             ));
-            const but = $('<button/>', {'data-index': 0, 'data-max': imgs.length});
+            const but = $('<button/>', {'data-index': 0, 'data-max': imgs.length});     //un boton invisible que se encarga de atrapar los eventos de teclado y llevar el indice usado para el navegado de imagenes
             setButtonHandlers(but);
             imgs.push(but);
             const popup = $('<span/>', {
@@ -173,29 +216,40 @@ function generatePopups(res) {
     return elems;
 }
 
+/**
+ * Setea los handlers para el boton invisible.
+ */
 function setButtonHandlers(button) {
     button.keydown(function (ev) {navigatePics($(this),ev)});
 }
 
-function navigatePics(button, event) {
+/**
+ * Navega entre las imagenes del popup leyendo la tecla presionada y moviendose en un ciclo entre las imagenes. La tecla 'A' va hacia atras y la 'D' va delante.
+ * @param  {jQuery} button el boton invisible
+ * @param  {any} event los datos del evento
+ */function navigatePics(button, event) {
     const index = parseInt(button.attr('data-index'));
     const max = parseInt(button.attr('data-max'));
-    const pos = i => Math.abs(i) % max
+    const pos = i => Math.abs(i) % max  //lambda que calcula la posicion haciendo modulo entre el index y el total de imagenes, de esta forma se mueve dentro de un ciclo
 
     switch (event.code) {
         case 'KeyA':
-            button.parent().children('img').css('display', 'none');
-            button.parent().children('img').eq(pos(index-1)).css('display', 'block');
-            button.attr('data-index', index-1);
+            button.parent().children('img').css('display', 'none');                     //oculta todas las imagenes
+            button.parent().children('img').eq(pos(index-1)).css('display', 'block');   //revela la imagen del numero anterior a la posicion actual
+            button.attr('data-index', index-1);                                         //guarda la nueva posicion
             break
         case 'KeyD':
             button.parent().children('img').css('display', 'none');
-            button.parent().children('img').eq(pos(index+1)).css('display', 'block');
+            button.parent().children('img').eq(pos(index+1)).css('display', 'block');   //revela la imagen del numero siguiente a la posicion actual
             button.attr('data-index', index+1);
             break
     }
 }
 
+/**
+ * Carga un nuevo nivel de conversacion.
+ * @param  {jQuery} reply la respuesta de la cual cargar la conversacion
+ */
 function openThread(reply) {
     const fila = reply.parent();
     const nivel = fila.parent();
@@ -203,7 +257,7 @@ function openThread(reply) {
     const lvl = extractLevel(nivel);
     const twid = reply.attr('data-id');
     reply.off('mouseenter mouseleave');    //desactivo el handler de cuando saco el mouse
-    getPopup(reply).css('display', 'none');
+    getPopup(reply).css('display', 'none'); //oculto el popup del tweet para que no tape
     reply.addClass('active');
     fila.addClass('locked-thread');
     fila.children('article').children('.article-metadata').off('mouseenter mouseleave');
@@ -225,7 +279,7 @@ function openThread(reply) {
             success: function (res) {
                 const tweets = prepareTweets(res);
                 const pops = preparePopups(res);
-                if (res.token) {
+                if (res.token) {    //si hay token, o sea si hay mas respuestas que cargar
                     const btn = $('<a/>', {
                         'class': 'load-more btn btn-primary btn-lg',
                         'data-token': res.token,
@@ -247,7 +301,7 @@ function openThread(reply) {
                     'data-id': twid,
                     html: [new_fila, new_popups]
                 });
-                $('#lv-' + (lvl+1)).replaceWith(new_nivel);
+                $('#lv-' + (lvl+1)).replaceWith(new_nivel); //pongo el nuevo nivel en reemplazo del nivel vacio
                 container.append($('<div/>', {  //dejo un nivel vacio para el siguiente openThread
                     id: 'lv-' + (lvl+2),
                     'class': 'nivel'
@@ -258,11 +312,17 @@ function openThread(reply) {
     );
 }
 
-//tomo el numero del nivel
+/**
+ * Extraigo el numero de nivel del elemento 'nivel'.
+ */
 function extractLevel(nivel) {
     return parseInt(nivel.attr('id').substr(3));
 }
 
+/**
+ * Cierro un nivel de conversacion, afectando todos los niveles anidados.
+ * @param  {jQuery} reply el tweet del cual cerrar conversacion
+ */
 function closeThread(reply) {
     const fila = reply.parent();
     const nivel = fila.parent();
@@ -291,13 +351,17 @@ function closeThread(reply) {
         moreReplies($(this));
     });
     container.children().slice(lvl+1).remove();   //borro los niveles que vienen delante
-    container.append($('<div/>', {
+    container.append($('<div/>', {  //dejo un nivel vacio para el siguiente openThread
         id: 'lv-' + (lvl+1),
         'class': 'nivel'
     }));
     reply.removeClass('active');
 }
 
+/**
+ * Actualiza la altura de todos los support acorde a la del texto que soportan. Esta funcion es necesaria porque esto se tiene que hacer despues de que el username haya sido renderizado.
+ * @param  {number} lvl el nivel en el cual actualizar
+ */
 function updateSupports(lvl) {
     const tweets = $('#lv-' + lvl).children().eq(0).children('article');
     const sups = tweets.children('.article-metadata').children('.support').slice(-10); //los ultimos 10 ya que como maximo, y la mayoria de las veces, cargo 10 tweets
