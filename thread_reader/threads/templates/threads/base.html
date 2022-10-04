@@ -14,10 +14,10 @@
     <script src="{% static 'threads/thread.js' type="text/javascript" %}"></script>
     <div class="topnav">
       <ul>
-        <li><a href="http://" target="_blank">uno</a></li>
-        <li><a href="http://" target="_blank">dos</a></li>
-        <li class="r-nav"><a href="http://" target="_blank">cuatro</a></li>
-        <li class="r-nav"><a href="http://" target="_blank">tres</a></li>
+        <li><a href="/"><img src="{% static 'icons/house-solid.svg' %}" alt="inicio"></a></li>
+        {% comment %} <li><a href="http://" target="_blank">dos</a></li> {% endcomment %}
+        <li class="r-nav"><a href="https://github.com/lucianoamoruso/ThreadReader" target="_blank"><img src="{% static 'icons/github.svg' %}" alt="source code"></a></li>
+        <li class="r-nav"><a href="https://www.linkedin.com/in/luciano-amoruso-6a8a92119" target="_blank"><img src="{% static 'icons/linkedin.svg' %}" alt="linkedin"></a></li>
       </ul>
     </div>
     {% block content %}{% endblock content %}
