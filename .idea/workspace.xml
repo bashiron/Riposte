@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="32bbfa81-5c56-48e4-9092-37c9b6b85cb3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/ThreadReader.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thread_reader/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.firebaserc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firebase.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firebase_init.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.djlintrc" beforeDir="false" afterPath="$PROJECT_DIR$/.djlintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.idea/dictionaries/bashiron.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.idea/thread_reader.iml" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/.idea/thread_reader.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/.vscode/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/thread_reader/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/thread_reader/asgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/asgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/thread_reader/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/thread_reader/settings_copy.py" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/settings_copy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/thread_reader/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/thread_reader/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/thread_reader/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/migrations/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/static/icons/circle-plus-solid.svg" beforeDir="false" afterPath="$PROJECT_DIR$/threads/static/icons/circle-plus-solid.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/static/icons/github.svg" beforeDir="false" afterPath="$PROJECT_DIR$/threads/static/icons/github.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/static/icons/house-solid.svg" beforeDir="false" afterPath="$PROJECT_DIR$/threads/static/icons/house-solid.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/static/icons/linkedin.svg" beforeDir="false" afterPath="$PROJECT_DIR$/threads/static/icons/linkedin.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/static/threads/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/threads/static/threads/base.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/static/threads/thread.js" beforeDir="false" afterPath="$PROJECT_DIR$/threads/static/threads/thread.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/templates/threads/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/threads/templates/threads/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/templates/threads/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/threads/templates/threads/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/templates/threads/tweet.html" beforeDir="false" afterPath="$PROJECT_DIR$/threads/templates/threads/tweet.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/utils/mention_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/mention_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/utils/misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/misc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/utils/mock_provider.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/mock_provider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/utils/twitter_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/twitter_requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thread_reader/threads/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2FiXYNaZ3Q3otTnWVv0MbVvmoCr" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/home/bashiron/bashi/projects/ThreadReader",
+    "settings.editor.selected.configurable": "Errors"
+  }
+}]]></component>
+  <component name="RunManager" selected="Python.runserver">
+    <configuration name="prueba" type="PythonConfigurationType" factoryName="Python">
+      <module name="ThreadReader" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="threads.prueba" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="runserver" type="PythonConfigurationType" factoryName="Python">
+      <module name="ThreadReader" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="thread_reader.settings" />
+      </envs>
+      <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="django" />
+      <option name="PARAMETERS" value="runserver" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.runserver" />
+      <item itemvalue="Python.prueba" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="32bbfa81-5c56-48e4-9092-37c9b6b85cb3" name="Changes" comment="" />
+      <created>1664975924203</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1664975924203</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
