@@ -25,7 +25,7 @@ def extract_id(url):
 
 
 def process_request(request, form, twid):
-    mode = R    # definir si usar el modo real o mock
+    mode = M    # definir si usar el modo real o mock
     root, recent = False, False
     global fetcher
     fetcher = Fetcher(mode)
@@ -70,11 +70,15 @@ def fill_tweet_context(ctx, res):
     ctx['text'] = res['data']['text']
     ctx['id'] = res['data']['id']
     ctx['date'] = trim_date(res['data']['created_at'])
+    ctx['urls'] = base_media(res['includes']['media'], res['data']['attachments']['media_keys'])
     return ctx
 
 def trim_date(date):
     rx = r".+?(?=T)"
     return re.search(rx, date).group(0)
+
+def base_media(media, keys):
+    return [m['url'] for m in media if m['type'] == 'photo' and m['media_key'] in keys]
 
 # Ajax - el thread de una respuesta
 def new_thread(request):

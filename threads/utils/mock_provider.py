@@ -10,13 +10,36 @@ from queue import Queue, LifoQueue
 
 
 def sequence(items):
+    """Recibe una lista de `paths` a archivos json y devuelve una lista con esos jsons convertidos a ``dict`` para su
+    uso en python.
+    """
     seq = []
     for item in items:
         seq.append(load_as_json(item))
     return seq
 
-# Trae un tweet o thread de la api y lo almacena en disco, con un procesado opcional de por medio.
 def generate(kind, twid, funs=None):
+    """Trae un tweet o thread de la api y lo almacena en disco, con un procesado opcional de por medio.
+
+    Parameters
+    ----------
+    kind : `str`
+        String que indica el tipo de dato a conseguir. Posibles valores: `tweet` | `thread`.
+    twid : `str`
+        Id del tweet a conseguir.
+    funs : `list`
+        Lista de funciones a aplicar al objeto traido de la api. Estas funciones deben aceptar el parametro kind
+        (tipo de dato) y res (objeto de respuesta de la api).
+
+    Notes
+    -----
+    1. Evalua el tipo de objeto a ser conseguido con un `match`
+    2. Pide el payload estandar al fetcher y lo simplifica porque necesita los datos minimos, las funciones de procesado
+    se encargaran de rellenar los datos extra
+    3. Consigue el objeto haciendo un pedido con payload personalizado (simplificado)
+    4. Aplica las funciones de procesado al objeto conseguido
+    5. Almacena el objeto final en disco
+    """
     if funs is None:
         funs = []
     fetcher = Fetcher(R)
@@ -29,7 +52,7 @@ def generate(kind, twid, funs=None):
             simplify(payload, kind)
             res = fetcher.custom_request_tweet(twid, payload)
             for fn in funs:
-                fn(kind, res)
+                fn(kind, res)   # aplicamos la funcion a lo traido de la api
 
         case 'thread':
             payload = fetcher.thread_payload(twid)
@@ -41,6 +64,15 @@ def generate(kind, twid, funs=None):
     save_as_json(kind, res, filename)
 
 def simplify(payload, kind):
+    """Simplifica el payload quitando los campos que contienen datos extra.
+
+    Parameters
+    ----------
+    payload : `dict`
+        Payload a simplificar.
+    kind : `str`
+        Tipo de dato.
+    """
     match kind:
         case 'tweet':
             payload['tweet.fields'] = payload['tweet.fields'].replace(',attachments', '')

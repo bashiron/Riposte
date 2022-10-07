@@ -1,6 +1,9 @@
-from .mention_parser import rm_auto_mentions
-import requests, environ
 from queue import Queue, LifoQueue
+
+import environ
+import requests
+
+from .mention_parser import rm_auto_mentions
 
 M = 'mock'
 R = 'real'

@@ -99,7 +99,7 @@ body {
   padding: 10px 20px;
   border: 5px solid rgb(154, 225, 226);
   border-radius: 3px;
-  height: 260px;
+  /* height: 260px; */
   cursor: default;
 }
 
@@ -116,9 +116,17 @@ body {
   word-break: break-all;
   margin-top: 10px;
   overflow: auto;
-  height: 145px;
   font-size: larger;
   font-weight: 400;
+}
+
+.base-content p {
+  max-height: 145px;
+}
+
+#base-tweet img {
+  height: 100px;
+  width: 100px;
 }
 
 .text-muted {

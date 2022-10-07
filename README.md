@@ -1,6 +1,6 @@
 # ThreadReader
 
-Web app para ver hilos de twitter de una forma mas legible. Actualmente hosteada en http://threadreader.xyz/
+Web app para ver hilos de twitter de una forma mas legible. Actualmente hosteada en https://threadreader.xyz/
 
 ## Deployment local
 
