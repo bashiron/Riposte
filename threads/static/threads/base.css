@@ -142,18 +142,18 @@ body {
   object-position: center;
 }
 
-.base-media, .modal-media {
+#base-media, #modal-media {
   position: relative;
   margin: auto;
 }
 
-.base-media {
+#base-media {
   width: 500px;
   height: 500px;
   overflow: hidden;
 }
 
-.modal-media {
+#modal-media {
   width: 90%;
   height: 90%;
 }
@@ -164,19 +164,19 @@ body {
   height: inherit;
 }
 
-.modal-media .mySlides {
+#modal-media .mySlides {
   width: 100%;
   height: 100%;
 }
 
-.base-media img {
+#base-media img {
   padding: 8px 0;
   width: inherit;
   height: inherit;
   cursor: pointer;
 }
 
-.modal-media img {
+#modal-media img {
   padding: 8px 0;
   width: inherit;
   height: inherit;
@@ -197,7 +197,7 @@ body {
   user-select: none;
 }
 
-.modal-media .prev, .modal-media .next {
+#modal-media .prev, #modal-media .next {
   background-color: #1e363c;
 }
 
@@ -211,7 +211,7 @@ body {
   background-color: var(--article-color);
 }
 
-.modal-media .prev:hover, .modal-media .next:hover {
+#modal-media .prev:hover, #modal-media .next:hover {
   color: white;
   background-color: #162528;
 }
@@ -481,7 +481,7 @@ body {
 
 .close:hover,
 .close:focus {
-  color: #000;
+  color: #eae4e4;
   text-decoration: none;
   cursor: pointer;
 }

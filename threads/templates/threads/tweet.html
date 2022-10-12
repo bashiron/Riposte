@@ -13,27 +13,27 @@
                 <div class="base-text">
                     <p>{{ text }}</p>
                 </div>
-                <div class="base-media">
-                    {% for img in urls %}
-                        <div class="mySlides">
-                            <img class="cover" src="{{img}}" onclick="openPicture()" alt="">
-                        </div>
-                    {% endfor %}                    
-                    <a class="prev" onclick="plusSlides(-1)">❮</a>
-                    <a class="next" onclick="plusSlides(1)">❯</a>
+                <div id="base-media" data-index="0" data-max="{{ url_count }}">
+                {% for img in urls %}
+                    <div class="mySlides">
+                        <img class="cover" src="{{img}}" onclick="openPicture()" alt="">
+                    </div>
+                {% endfor %}                    
+                    <a class="prev" onclick="slideLeft()">❮</a>
+                    <a class="next" onclick="slideRight()">❯</a>
 
                 </div>
                 <div id="myModal" class="modal">
                     <div class="modal-content">
                         <span class="close" onclick="closePicture()">&times;</span>
-                        <div class="modal-media">
-                            {% for img in urls %}
-                                <div class="mySlides">
-                                    <img class="contain" src="{{img}}" alt="">
-                                </div>
-                            {% endfor %}
-                            <a class="prev" onclick="plusSlidesDos(-1)">❮</a>
-                            <a class="next" onclick="plusSlidesDos(1)">❯</a>            
+                        <div id="modal-media" data-index="0" data-max="{{ url_count }}">
+                        {% for img in urls %}
+                            <div class="mySlides">
+                                <img class="contain" src="{{img}}" alt="">
+                            </div>
+                        {% endfor %}
+                            <a class="prev" onclick="slideLeft()">❮</a>
+                            <a class="next" onclick="slideRight()">❯</a>            
                         </div>
                     </div>
                 </div>
@@ -64,6 +64,7 @@
             $('#lv-0 .fila').append(articulo);
             openThread(articulo);
             const css = document.getElementById('css');
+            showPics();
         });
     </script>
 {% endblock content %}

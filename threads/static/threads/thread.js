@@ -220,28 +220,46 @@ function generatePopups(res) {
  * Setea los handlers para el boton invisible.
  */
 function setButtonHandlers(button) {
-    button.keydown(function (ev) {navigatePics($(this),ev)});
+    button.keydown(function (ev) {navigatePopup($(this),ev)});
 }
 
 /**
  * Navega entre las imagenes del popup leyendo la tecla presionada y moviendose en un ciclo entre las imagenes. La tecla 'A' va hacia atras y la 'D' va delante.
  * @param  {jQuery} button el boton invisible
  * @param  {any} event los datos del evento
- */function navigatePics(button, event) {
-    const index = parseInt(button.attr('data-index'));
-    const max = parseInt(button.attr('data-max'));
-    const pos = i => Math.abs(i) % max  //lambda que calcula la posicion haciendo modulo entre el index y el total de imagenes, de esta forma se mueve dentro de un ciclo
-
+ */
+function navigatePopup(button, event) {
     switch (event.code) {
         case 'KeyA':
-            button.parent().children('img').css('display', 'none');                     //oculta todas las imagenes
-            button.parent().children('img').eq(pos(index-1)).css('display', 'block');   //revela la imagen del numero anterior a la posicion actual
-            button.attr('data-index', index-1);                                         //guarda la nueva posicion
+            navigatePics(button, button.parent().children('img'), 'left')
             break
         case 'KeyD':
-            button.parent().children('img').css('display', 'none');
-            button.parent().children('img').eq(pos(index+1)).css('display', 'block');   //revela la imagen del numero siguiente a la posicion actual
-            button.attr('data-index', index+1);
+            navigatePics(button, button.parent().children('img'), 'right')
+            break
+    }
+}
+
+/**
+ * Navega una lista de imagenes segun la direccion recibida, la navegacion se realiza ocultando todos los elementos excepto el que corresponda mostrar.
+ * @param  {jQuery} element elemento del cual extraer el indice actual y el maximo (fin del ciclo)
+ * @param {[jQuery]} target lista con los elementos a iterar (generalmente imagenes o contenedores de imagenes)
+ * @param {string} direction direccion a la cual moverse. Acepta 'left' y 'right'
+ */
+function navigatePics(element, target, direction) {
+    const index = parseInt(element.attr('data-index'));
+    const max = parseInt(element.attr('data-max'));
+    const pos = i => Math.abs(i) % max  //lambda que calcula la posicion haciendo modulo entre el index y el total de imagenes, de esta forma se mueve dentro de un ciclo
+
+    switch (direction) {
+        case 'left':
+            target.css('display', 'none');                      //oculta todas las imagenes
+            target.eq(pos(index-1)).css('display', 'block');    //revela la imagen del numero anterior a la posicion actual
+            element.attr('data-index', index-1);                //guarda la nueva posicion
+            break
+        case 'right':
+            target.css('display', 'none');
+            target.eq(pos(index+1)).css('display', 'block');    //revela la imagen del numero siguiente a la posicion actual
+            element.attr('data-index', index+1);
             break
     }
 }
@@ -371,69 +389,57 @@ function updateSupports(lvl) {
     });
 }
 
-//-------------variables para consola----------------
-
-function consoleInit() {
-    console.log('Variables inicializadas');
-    art = $('#lv-1').children().eq(0).children().eq(2);
-    links = $('.link');
+/**
+ * Muestra la primer imagen del slideshow. Esto se debe ejecutar al terminar de cargar la pagina.
+ */
+function showPics() {
+    const index = parseInt($("#base-media").attr('data-index'));
+    const max = parseInt($("#base-media").attr('data-max'));
+    $(".mySlides").eq(index).css('display', 'block');
+    $(".mySlides").eq(index + max).css('display', 'block');
 }
 
-
-
-
-
-
-
-
-
-//----------SLIDES--------------
-
-
-
-let slideIndex = 1;
-showSlides(slideIndex);
-showSlidesDos(slideIndex);
-
-function plusSlides(n) {
-  showSlides(slideIndex += n);
+/**
+ * Desliza el slideshow hacia la izquierda (sincronizado con el slideshow del modal).
+ */
+function slideLeft() {
+    navigatePics($("#base-media"), $("#base-media .mySlides"), 'left');
+    navigatePics($("#modal-media"), $("#modal-media .mySlides"), 'left');
 }
 
-function plusSlidesDos(n) {
-    showSlidesDos(slideIndex += n);
-  }  
-
-function showSlides(n) {
-  let i;
-  let slides = $('.base-media .mySlides');
-  if (n > slides.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";  
-  }
-  slides[slideIndex-1].style.display = "block";
+/**
+ * Desliza el slideshow hacia la derecha (sincronizado con el slideshow del modal).
+ */
+function slideRight() {
+    navigatePics($("#base-media"), $("#base-media .mySlides"), 'right');
+    navigatePics($("#modal-media"), $("#modal-media .mySlides"), 'right');
 }
 
-function showSlidesDos(n) {
-    let i;
-    let slides = $('.modal-media .mySlides');
-    if (n > slides.length) {slideIndex = 1}    
-    if (n < 1) {slideIndex = slides.length}
-    for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";  
-    }
-    slides[slideIndex-1].style.display = "block";
-  }
-  
-
-
-//----------MODAL--------------
-
-
+/**
+ * Abre el modal que contiene las imagenes en su tamaño original.
+ */
 function openPicture() {
     $('#myModal').css('display', 'block');
 }
 
+/**
+ * Cierra el modal.
+ */
 function closePicture() {
     $('#myModal').css('display', 'none');
+}
+
+$(document).on('keydown', function(ev) {
+    if (ev.code == 'Escape') {
+        closePicture();
+    };
+});
+
+//-------------variables para consola----------------
+
+function consoleInit() {
+    art = $('#lv-1').children().eq(0).children().eq(2);
+    links = $('.link');
+
+    console.log('Variables inicializadas');
 }

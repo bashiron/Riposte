@@ -65,12 +65,14 @@ def tweet(request, twid):
     return render(request, 'threads/tweet.html', tweet_ctx)
 
 def fill_tweet_context(ctx, res):
+    urls = base_media(res['includes']['media'], res['data']['attachments']['media_keys'])
     ctx['name'] = res['includes']['users'][0]['name']
     ctx['username'] = res['includes']['users'][0]['username']
     ctx['text'] = res['data']['text']
     ctx['id'] = res['data']['id']
     ctx['date'] = trim_date(res['data']['created_at'])
-    ctx['urls'] = base_media(res['includes']['media'], res['data']['attachments']['media_keys'])
+    ctx['urls'] = urls
+    ctx['url_count'] = len(urls)
     return ctx
 
 def trim_date(date):
