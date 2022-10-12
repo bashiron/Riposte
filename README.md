@@ -30,3 +30,7 @@ Para usar el modo _mock_ se necesitan archivos json que representen respuestas d
 ## Mock provider
 
 Este modulo nacio de la necesidad de probar casos extremos en los datos de tweet que maneja la aplicacion, ademas tiene el beneficio de permitirme probar cambios consantes sin agotar la *quota* mensual de la api.
+
+
+
+Iconos provistos por [fontawesome](https://fontawesome.com/)

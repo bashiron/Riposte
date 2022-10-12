@@ -25,7 +25,7 @@ def extract_id(url):
 
 
 def process_request(request, form, twid):
-    mode = M    # definir si usar el modo real o mock
+    mode = R    # definir si usar el modo real o mock
     root, recent = False, False
     global fetcher
     fetcher = Fetcher(mode)

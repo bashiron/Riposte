@@ -83,7 +83,11 @@ class Fetcher:
         return requests.get(url, params=payload, headers=heads).json()
 
     def tweet_payload(self):
-        return {'tweet.fields': 'created_at,attachments,conversation_id,entities', 'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id', 'media.fields': 'url'}  #TODO agregar public_metrics
+        return {
+            'tweet.fields': 'created_at,attachments,conversation_id,entities,public_metrics',
+            'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
+            'media.fields': 'url'
+        }
 
     def obtain_thread(self, twid, token=None):
         """Obtiene los datos procesados del thread de un tweet que coincida con el id.
@@ -133,7 +137,7 @@ class Fetcher:
     def thread_payload(self, twid):
         return {
             'query': f'in_reply_to_tweet_id: {twid}',
-            'tweet.fields': 'entities,attachments',
+            'tweet.fields': 'entities,attachments,public_metrics',
             'expansions': 'author_id,attachments.media_keys,in_reply_to_user_id',
             'media.fields': 'url',
             'user.fields': 'name,username',
@@ -236,7 +240,12 @@ class Fetcher:
                 'user_id': tupla[1]['id'],
                 'username': tupla[1]['username'],
                 'name': tupla[1]['name'],
-                'urls': tupla[2]
+                'urls': tupla[2],
+                'metrics': {
+                    'likes': tupla[0]['public_metrics']['like_count'],
+                    'replies': tupla[0]['public_metrics']['reply_count'],
+                    'retweets': tupla[0]['public_metrics']['retweet_count']
+                }
             }
 
     def custom_request_tweet(self, twt_id, payload):

@@ -1,4 +1,5 @@
 let static_url = undefined;
+let icons_url = undefined;
 let more_url = undefined;
 let open_url = undefined;
 let close_url = undefined;
@@ -8,6 +9,7 @@ let art, links;    //variables para debugear en consola
 //guardo los urls de django porque no puedo usar el tag de static o url en javascript
 function storeUrls(static, open, more, close) {
     static_url = static;
+    icons_url = static_url + 'icons/'
     open_url = open;
     more_url = more;
     close_url = close;
@@ -154,14 +156,41 @@ function generateTweets(res) {
             'class': 'article-content',
             html: res.items[i].text
         });
+        const metrics = $('<div/>', {
+            'class': 'metrics',
+            html: generateMetrics(res.items[i].metrics)
+        });
         const articulo = $('<article/>', {
             'class': 'content-section',
             'data-id': res.items[i].id,
-            html: [metadata, parrafo_cont, link]
+            html: [metadata, parrafo_cont, metrics, link]
         });
         elems.push(articulo);
     }
     return elems;
+}
+
+function generateMetrics(metrics) {
+    const likes_svg = `<img class="metrics-icon" src="${icons_url}heart-regular.svg">`;
+    const replies_svg = `<img class="metrics-icon" src="${icons_url}comments-regular.svg">`;
+    const retweets_svg = `<img class="metrics-icon" src="${icons_url}retweet-solid.svg">`;
+    // const likes_svg = $('<img/>', {
+    //     src: icons_url + 'heart-regular.svg',
+    //     style: 'width:20px; height:20px'
+    // });
+    const likes = $('<span/>', {
+        'class': 'met-likes',
+        html: likes_svg + ' ' + metrics.likes + ' '
+    });
+    const replies = $('<span/>', {
+        'class': 'met-replies',
+        html: replies_svg + ' ' + metrics.replies + ' '
+    });
+    const retweets = $('<span/>', {
+        'class': 'met-retweets',
+        html: retweets_svg + ' ' + metrics.retweets + ' '
+    });
+    return [likes, replies, retweets];
 }
 
 /**
@@ -200,7 +229,8 @@ function generatePopups(res) {
     for (let i = 0; i < res.items.length; i++) {
         if (res.items[i].urls[0]) {     //solo crear popup si el tweet tiene media
             const imgs = res.items[i].urls.map(url => (
-                $('<img/>', {src: url + '&name=small'})
+                // $('<img/>', {src: url + '&name=small'})
+                $('<img/>', {src: url})
             ));
             const but = $('<button/>', {'data-index': 0, 'data-max': imgs.length});     //un boton invisible que se encarga de atrapar los eventos de teclado y llevar el indice usado para el navegado de imagenes
             setButtonHandlers(but);
