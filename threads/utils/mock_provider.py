@@ -249,4 +249,4 @@ images = [
     'https://pbs.twimg.com/media/FZzIihWacAAjlaF?format=jpg'
 ]
 
-images = [img + '&name=small' for img in images]
+# images = [img + '&name=small' for img in images]

@@ -200,7 +200,7 @@ function generatePopups(res) {
     for (let i = 0; i < res.items.length; i++) {
         if (res.items[i].urls[0]) {     //solo crear popup si el tweet tiene media
             const imgs = res.items[i].urls.map(url => (
-                $('<img/>', {src: url})
+                $('<img/>', {src: url + '&name=small'})
             ));
             const but = $('<button/>', {'data-index': 0, 'data-max': imgs.length});     //un boton invisible que se encarga de atrapar los eventos de teclado y llevar el indice usado para el navegado de imagenes
             setButtonHandlers(but);
@@ -391,23 +391,49 @@ function consoleInit() {
 
 
 
-
-
-
 let slideIndex = 1;
 showSlides(slideIndex);
+showSlidesDos(slideIndex);
 
 function plusSlides(n) {
   showSlides(slideIndex += n);
 }
 
+function plusSlidesDos(n) {
+    showSlidesDos(slideIndex += n);
+  }  
+
 function showSlides(n) {
   let i;
-  let slides = document.getElementsByClassName("mySlides");
+  let slides = $('.base-media .mySlides');
   if (n > slides.length) {slideIndex = 1}    
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = "none";  
   }
   slides[slideIndex-1].style.display = "block";
+}
+
+function showSlidesDos(n) {
+    let i;
+    let slides = $('.modal-media .mySlides');
+    if (n > slides.length) {slideIndex = 1}    
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+    }
+    slides[slideIndex-1].style.display = "block";
+  }
+  
+
+
+//----------MODAL--------------
+
+
+function openPicture() {
+    $('#myModal').css('display', 'block');
+}
+
+function closePicture() {
+    $('#myModal').css('display', 'none');
 }

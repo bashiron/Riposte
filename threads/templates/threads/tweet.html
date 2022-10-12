@@ -14,17 +14,30 @@
                     <p>{{ text }}</p>
                 </div>
                 <div class="base-media">
-                        {% for img in urls %}
-                            <div class="mySlides">
-                                <img class="cover" src="{{img}}" alt="">  {% comment %}CAMBIAR EL FINAL DEL URL PARA QUE CARGUE IMAGEN EN CALIDAD ORIGINAL{% endcomment %}
-                            </div>
-                        {% endfor %}
-                        
-                        <a class="prev" onclick="plusSlides(-1)">❮</a>
-                        <a class="next" onclick="plusSlides(1)">❯</a>
+                    {% for img in urls %}
+                        <div class="mySlides">
+                            <img class="cover" src="{{img}}" onclick="openPicture()" alt="">
+                        </div>
+                    {% endfor %}                    
+                    <a class="prev" onclick="plusSlides(-1)">❮</a>
+                    <a class="next" onclick="plusSlides(1)">❯</a>
+
+                </div>
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closePicture()">&times;</span>
+                        <div class="modal-media">
+                            {% for img in urls %}
+                                <div class="mySlides">
+                                    <img class="contain" src="{{img}}" alt="">
+                                </div>
+                            {% endfor %}
+                            <a class="prev" onclick="plusSlidesDos(-1)">❮</a>
+                            <a class="next" onclick="plusSlidesDos(1)">❯</a>            
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% comment %} <img src="https://pbs.twimg.com/media/FZc_1mfWQAAugSo?format=jpg&name=small" width="50" height="50" alt=""> {% endcomment %}
             <div class="text-muted">
                 <a href="https://twitter.com/{{ username }}/status/{{ id }}"
                    target="_blank">{{ date }}</a>
