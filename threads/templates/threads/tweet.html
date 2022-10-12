@@ -2,7 +2,7 @@
 {% block content %}
 {% load static %}
     <div class="d-flex flex-row justify-content-center">
-        <article id="base-tweet" data-conv="{{ id }}" class="w-25">
+        <article id="base-tweet" data-conv="{{ id }}">
             <div class="base-metadata">
                 <a id="top-username"
                    class="mr-2"
@@ -10,11 +10,18 @@
                    target="_blank">{{ name }}</a>
             </div>
             <div class="base-content">
-                <p>{{ text }}</p>
+                <div class="base-text">
+                    <p>{{ text }}</p>
+                </div>
                 <div class="base-media">
-                    {% for img in urls %}
-                        <img src="{{img}}" alt="">
-                    {% endfor %}
+                        {% for img in urls %}
+                            <div class="mySlides">
+                                <img class="cover" src="{{img}}" alt="">  {% comment %}CAMBIAR EL FINAL DEL URL PARA QUE CARGUE IMAGEN EN CALIDAD ORIGINAL{% endcomment %}
+                            </div>
+                        {% endfor %}
+                        
+                        <a class="prev" onclick="plusSlides(-1)">❮</a>
+                        <a class="next" onclick="plusSlides(1)">❯</a>
                 </div>
             </div>
             {% comment %} <img src="https://pbs.twimg.com/media/FZc_1mfWQAAugSo?format=jpg&name=small" width="50" height="50" alt=""> {% endcomment %}

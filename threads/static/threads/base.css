@@ -10,9 +10,13 @@ body {
   margin-top: 5rem;
 }
 
+#nav-space {
+  height: 75px;
+}
+
 .topnav {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: 0px;
 }
 
@@ -99,7 +103,10 @@ body {
   padding: 10px 20px;
   border: 5px solid rgb(154, 225, 226);
   border-radius: 3px;
-  /* height: 260px; */
+  min-width: 450px;
+  min-height: 450px;
+  /* max-height: 750px; */
+  /* max-width: 500px; */
   cursor: default;
 }
 
@@ -113,21 +120,24 @@ body {
 }
 
 .base-content {
-  word-break: break-all;
   margin-top: 10px;
-  overflow: auto;
-  font-size: larger;
-  font-weight: 400;
 }
 
-.base-content p {
+.base-text {
+  overflow: auto;
+  word-break: break-all;
+}
+
+.base-text p {
+  font-weight: 400;
+  font-size: larger;
   max-height: 145px;
 }
 
-#base-tweet img {
+/* #base-tweet img {
   height: 100px;
   width: 100px;
-}
+} */
 
 .text-muted {
   text-align: right;
@@ -346,4 +356,77 @@ body {
 
 .article-content::-webkit-scrollbar-thumb:hover {
   background-color: #39788394;
+}
+
+
+
+
+
+
+
+
+
+
+/* ------------------SLIDES-------------------- */
+
+
+
+
+
+
+
+* {box-sizing: border-box}
+body {font-family: Verdana, sans-serif; margin:0}
+
+#base-tweet img {
+  /* vertical-align: middle; */
+  padding: 8px 0;
+  width: inherit;
+  height: inherit;
+}
+
+.cover {
+  object-fit: cover;
+  object-position: left top;
+}
+
+.base-media {
+  position: relative;
+  margin: auto;
+  width: 500px;
+  height: 500px;
+  overflow: hidden;
+}
+
+.mySlides {
+  display: block;
+  width: inherit;
+  height: inherit;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
 }
