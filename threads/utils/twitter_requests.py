@@ -4,6 +4,7 @@ import environ
 import requests
 
 from .mention_parser import rm_auto_mentions
+from ..exceptions import NoReplies
 
 M = 'mock'
 R = 'real'
@@ -109,7 +110,10 @@ class Fetcher:
         else:
             res = self.request_thread(twid, token)
         if token is None:
-            self.user_stack.put(res['data'][0]['in_reply_to_user_id'])
+            try:
+                self.user_stack.put(res['data'][0]['in_reply_to_user_id'])
+            except KeyError:
+                raise NoReplies
         return self.__compose_thread(res)
 
     def request_thread(self, twid, token):

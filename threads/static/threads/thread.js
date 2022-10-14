@@ -149,7 +149,7 @@ function generateTweets(res) {
         })
         const metadata = $('<div/>', {
             'class': 'article-metadata',
-            html: [support, parrafo_meta, link]
+            html: [support, parrafo_meta]
         });
         setMetadataHandlers(metadata);
         const parrafo_cont = $('<div/>', {
@@ -163,7 +163,8 @@ function generateTweets(res) {
         const articulo = $('<article/>', {
             'class': 'content-section',
             'data-id': res.items[i].id,
-            html: [metadata, parrafo_cont, metrics, link]
+            html: [metadata, parrafo_cont, metrics]
+            // html: [metadata, parrafo_cont, metrics, link]
         });
         elems.push(articulo);
     }
@@ -319,6 +320,8 @@ function openThread(reply) {
     });
     $.ajax(
         {
+            async: false,   //detenemos la pagina web hasta que termine el pedido. esta no es la mejor forma de hacerlo, deberia usar un promise o await para
+                            //bloquear el clickeo de tweets hasta que se complete el pedido.
             type: 'GET',
             url: open_url,
             data: {
@@ -355,7 +358,13 @@ function openThread(reply) {
                     'class': 'nivel'
                 }));
                 updateSupports(lvl+1);
-            }
+            },
+            error: function (request, status, error) {
+                if (request.responseText == 'NoReplies') {
+                    console.log('el tweet no tiene respuestas');
+                }
+            },
+            complete: function (request, status) {console.log('pedido completado');}
         }
     );
 }

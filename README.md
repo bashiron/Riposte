@@ -2,6 +2,18 @@
 
 Web app para ver hilos de twitter de una forma mas legible. Actualmente hosteada en https://threadreader.xyz/
 
+## Tecnologias
+
+El servidor esta hosteado en Ubuntu 22.04.1 LTS usando Apache2 y el certificado Let's Encrypt.
+
+Uso Django como framework pero no hago persistencia de datos.
+
+El comportamiento del html esta dictado por javascript puro, con las librerias Jquery y Bootstrap.
+
+Para el templating se usa DjangoHTML.
+
+El codigo del controller (views.py), sus modulos auxiliares, la configuracion del servidor frontend y el routing estan implementados en Python.
+
 ## Deployment local
 
 ### Requisitos:
@@ -14,7 +26,7 @@ Web app para ver hilos de twitter de una forma mas legible. Actualmente hosteada
 
 - Dependencias declaradas en `thread_reader/requirements.txt`. Se pueden instalar con
   
-  ```
+  ```bash
   pip install -r requirements.txt
   ```
 
@@ -29,8 +41,6 @@ Para usar el modo _mock_ se necesitan archivos json que representen respuestas d
 
 ## Mock provider
 
-Este modulo nacio de la necesidad de probar casos extremos en los datos de tweet que maneja la aplicacion, ademas tiene el beneficio de permitirme probar cambios consantes sin agotar la *quota* mensual de la api.
-
-
+Este modulo, que podria considerarse una aplicacion aparte, nacio de la necesidad de probar casos extremos en los datos de tweet que maneja la aplicacion, ademas tiene el beneficio de permitirme probar cambios consantes sin agotar la *quota* mensual de la api.
 
 Iconos provistos por [fontawesome](https://fontawesome.com/)

@@ -1,9 +1,10 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render
 import re
 from .forms import LinkForm
 from .utils.twitter_requests import R, M, Fetcher
 from .utils.mock_provider import sequence
+from .exceptions import NoReplies
 from datetime import datetime, timezone
 
 tweet_ctx = {}
@@ -85,7 +86,10 @@ def base_media(media, keys):
 # Ajax - el thread de una respuesta
 def new_thread(request):
     twid = request.GET['twid']
-    res = fetcher.obtain_thread(twid)
+    try:
+        res = fetcher.obtain_thread(twid)
+    except NoReplies:
+        return HttpResponseNotFound(NoReplies.web_name())
     return JsonResponse(res)
 
 # Ajax - mas respuestas en un thread
