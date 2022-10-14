@@ -172,9 +172,9 @@ function generateTweets(res) {
 }
 
 function generateMetrics(metrics) {
-    const likes_svg = `<img class="metrics-icon" src="${icons_url}heart-regular.svg">`;
-    const replies_svg = `<img class="metrics-icon" src="${icons_url}comments-regular.svg">`;
-    const retweets_svg = `<img class="metrics-icon" src="${icons_url}retweet-solid.svg">`;
+    const likes_svg = `<img src="${icons_url}heart-regular.svg">`;
+    const replies_svg = `<img src="${icons_url}comments-regular.svg">`;
+    const retweets_svg = `<img src="${icons_url}retweet-solid.svg">`;
     // const likes_svg = $('<img/>', {
     //     src: icons_url + 'heart-regular.svg',
     //     style: 'width:20px; height:20px'

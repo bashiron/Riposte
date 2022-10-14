@@ -183,6 +183,7 @@ body {
   width: inherit;
   height: inherit;
   cursor: pointer;
+  border-radius: 22px;
 }
 
 #sh-modal-media img {
@@ -364,9 +365,26 @@ body {
   scrollbar-color: var(--article-scrollbar-thumb-color) transparent;
 }
 
-.metrics-icon {
+.metrics {
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+.metrics img {
   width: 25px;
   height: 25px;
+}
+
+.met-likes img {
+  filter: invert(52%) sepia(67%) saturate(5437%) hue-rotate(331deg) brightness(101%) contrast(102%);
+}
+
+.met-replies img {
+  filter: invert(52%) sepia(67%) saturate(5217%) hue-rotate(204deg) brightness(101%) contrast(102%);
+}
+
+.met-retweets img {
+  filter: invert(52%) sepia(67%) saturate(5437%) hue-rotate(438deg) brightness(101%) contrast(102%);
 }
 
 .images-popup {
