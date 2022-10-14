@@ -361,8 +361,9 @@ function openThread(reply) {
             },
             error: function (request, status, error) {
                 if (request.responseText == 'NoReplies') {
-                    console.log('el tweet no tiene respuestas');
-                }
+                    $('#exampleModalCenter').modal('show');
+                    closeThread(reply);
+                };
             },
             complete: function (request, status) {console.log('pedido completado');}
         }
@@ -443,7 +444,7 @@ function showPics() {
  */
 function slideLeft() {
     navigatePics($("#base-media"), $("#base-media .mySlides"), 'left');
-    navigatePics($("#modal-media"), $("#modal-media .mySlides"), 'left');
+    navigatePics($("#sh-modal-media"), $("#sh-modal-media .mySlides"), 'left');
 }
 
 /**
@@ -451,7 +452,7 @@ function slideLeft() {
  */
 function slideRight() {
     navigatePics($("#base-media"), $("#base-media .mySlides"), 'right');
-    navigatePics($("#modal-media"), $("#modal-media .mySlides"), 'right');
+    navigatePics($("#sh-modal-media"), $("#sh-modal-media .mySlides"), 'right');
 }
 
 /**

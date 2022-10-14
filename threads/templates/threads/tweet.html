@@ -23,10 +23,10 @@
                     <a class="next" onclick="slideRight()">❯</a>
 
                 </div>
-                <div id="myModal" class="modal">
-                    <div class="modal-content">
+                <div id="myModal" class="slideshow-modal">
+                    <div id="sh-modal-content">
                         <span class="close" onclick="closePicture()">&times;</span>
-                        <div id="modal-media" data-index="0" data-max="{{ url_count }}">
+                        <div id="sh-modal-media" data-index="0" data-max="{{ url_count }}">
                         {% for img in urls %}
                             <div class="mySlides">
                                 <img class="contain" src="{{img}}" alt="">
@@ -51,6 +51,21 @@
         </div>
         <div id="lv-1" class="nivel">
             <div class="fila"></div>
+        </div>
+    </div>
+    <div class="modal error-modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+            </div>
+            <div class="modal-body">
+              El tweet no tiene respuestas
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary err-close-btn" data-dismiss="modal" onclick="$('#exampleModalCenter').modal('hide');">Cerrar</button>
+            </div>
+          </div>
         </div>
     </div>
     <div id="espacio"></div>
