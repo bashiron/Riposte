@@ -1,5 +1,6 @@
 :root {
   --article-color: rgb(174, 216, 217);
+  --trans-article-color: rgba(174, 216, 217, 0.74);
   --article-hover-color: rgb(226 233 255);
   --article-locked-color: rgb(106 138 139);
   --scrollbar-width: 20px;
@@ -15,6 +16,14 @@ body {
   background: #fafafa;
   color: #333333;
   margin-top: 5rem;
+}
+
+a {
+  color: #de3ce3;
+}
+
+a:hover {
+  color: #c43fc8;
 }
 
 #nav-space {
@@ -67,21 +76,33 @@ body {
 
 .home-container {
   position: absolute;
-  width: 700px;
+  width: 725px;
   top: 25%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   min-height: 80px;
 }
 
-.home-container form {
-  
+.home-container p {
+  color: #8e4343;
+}
+
+.home-container form label {
+  font-weight: 500;
 }
 
 .home-container form input[type=url] {
+  margin-left: 8px;
   height: 50px;
   width: 500px;
+  border: 2px solid #362c5b;
+  border-radius: 27px;
 }
+
+.home-container form input[type=url]:hover {
+  border-color: #24a3a3;
+}
+
 .home-container form input[type=submit] {
   margin-left: 12px;
 }
@@ -93,17 +114,33 @@ body {
   width: 550px;
   margin-top: 25px;
   font-size: larger;
-  color: red;
 }
 
 .error-message p {
+  color: red;
   position: relative;
   text-align: center;
 }
 
-.home-container p {
-  /* position: absolute; */
+#hints {
+  position: relative;
+  float: right;
+  right: 310px;
+  width: 500px;
+  margin: 0;
+  background: #d2ebf0;
+  padding: 1em;
+  border-radius: 1em;
+  border: 3px dotted;
+}
 
+#hints figcaption,
+#hints blockquote {
+  margin: 1em;
+}
+
+blockquote li {
+  margin-bottom: 5px;
 }
 
 #base-tweet {
@@ -132,7 +169,6 @@ body {
 
 .base-text {
   overflow: auto;
-  word-break: break-all;
 }
 
 .base-text p {
@@ -203,6 +239,7 @@ body {
   font-weight: bold;
   font-size: 18px;
   transition: 0.6s ease;
+  border: 2px solid white;
   border-radius: 0 3px 3px 0;
   user-select: none;
 }
@@ -217,8 +254,9 @@ body {
 }
 
 .prev:hover, .next:hover {
-  color: #713cb3;
-  background-color: var(--article-color);
+  color: rgba(113, 60, 179, 0.74);
+  border-color: var(--article-color);
+  background-color: var(--trans-article-color);
 }
 
 #sh-modal-media .prev:hover, #sh-modal-media .next:hover {

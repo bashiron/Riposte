@@ -199,7 +199,7 @@ def level_data(json, kind='thread'):
             }
 
         case 'thread':
-            obj = json['data'][0]   # asumimos que eligiremos el primero porque si
+            obj = json['data'][0]   # asumimos que elegiremos el primero porque si
             user = json['includes']['users'][0]  # suponemos orden
             return {
                 'user_id': obj['author_id'],
