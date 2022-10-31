@@ -1,4 +1,4 @@
-{% extends 'threads/base.html' %}
+{% extends 'chat/base.html' %}
 {% block content %}
 {% load static %}
     <div class="d-flex flex-row justify-content-center">
@@ -77,7 +77,7 @@
                 'data-id': '{{id}}'
             });
             $('#lv-0 .fila').append(articulo);
-            openThread(articulo);
+            openChat(articulo);
             const css = document.getElementById('css');
             showPics();
         });

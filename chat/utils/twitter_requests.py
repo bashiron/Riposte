@@ -19,10 +19,10 @@ class Fetcher:
        Modo de operacion del Fetcher, M (mock) o R (real)
     tweet : ``dict``
        Tweet base falso a ser provisto.
-    thread : ``Queue``
-       Cola de threads falsos a ser provistos en orden FIFO (primero en entrar primero en salir).
+    chat : ``Queue``
+       Cola de chats falsos a ser provistos en orden FIFO (primero en entrar primero en salir).
     user_stack : ``LifoQueue``
-       Cola de usuarios que aumenta en profundidad a medida que se abren threads nuevos, registra los nombres de usuario
+       Cola de usuarios que aumenta en profundidad a medida que se abren chats nuevos, registra los nombres de usuario
        en una cola LIFO (ultimo en entrar primero en salir) para poder limpiar el texto del tweet de las menciones
        autogeneradas.
     """
@@ -30,7 +30,7 @@ class Fetcher:
     def __init__(self, mode):
         self.mode = mode
         self.tweet = None
-        self.thread = Queue()
+        self.chat = Queue()
         self.user_stack = LifoQueue()
 
     def set_mocks(self, mocks):
@@ -38,7 +38,7 @@ class Fetcher:
         """
         self.tweet, *thr = mocks   #descompongo la lista en las dos variables
         for t in thr:
-            self.thread.put(t)
+            self.chat.put(t)
 
     def del_userids(self, num):
         """Borra ``num`` niveles de la pila de usuarios.
@@ -90,8 +90,8 @@ class Fetcher:
             'media.fields': 'url'
         }
 
-    def obtain_thread(self, twid, token=None):
-        """Obtiene los datos procesados del thread de un tweet que coincida con el id.
+    def obtain_chat(self, twid, token=None):
+        """Obtiene los datos procesados del chat de un tweet que coincida con el id.
 
         Parameters
         ----------
@@ -106,18 +106,18 @@ class Fetcher:
             Datos en formato json.
         """
         if self.mode is M:
-            res = self.thread.get()
+            res = self.chat.get()
         else:
-            res = self.request_thread(twid, token)
+            res = self.request_chat(twid, token)
         if token is None:
             try:
                 self.user_stack.put(res['data'][0]['in_reply_to_user_id'])
             except KeyError:
                 raise NoReplies
-        return self.__compose_thread(res)
+        return self.__compose_chat(res)
 
-    def request_thread(self, twid, token):
-        """Trae de la API, en formato json, los datos crudos del thread de un tweet que coincida con el id.
+    def request_chat(self, twid, token):
+        """Trae de la API, en formato json, los datos crudos del chat de un tweet que coincida con el id.
 
         Parameters
         ----------
@@ -132,13 +132,13 @@ class Fetcher:
             Datos en formato json.
         """
         url = 'https://api.twitter.com/2/tweets/search/recent'
-        payload = self.thread_payload(twid)
+        payload = self.chat_payload(twid)
         if token is not None:
             payload['next_token'] = token
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
         return requests.get(url, params=payload, headers=heads).json()
 
-    def thread_payload(self, twid):
+    def chat_payload(self, twid):
         return {
             'query': f'in_reply_to_tweet_id: {twid}',
             'tweet.fields': 'entities,attachments,public_metrics',
@@ -149,7 +149,7 @@ class Fetcher:
             'sort_order': 'recency'
             }
 
-    def __compose_thread(self, res):
+    def __compose_chat(self, res):
         """Construye un diccionario iterando sobre la respuesta, el cual esta creado para ser parseado en javascript
         y eventualmente convertido en `HTML`.
 
@@ -167,7 +167,7 @@ class Fetcher:
         Notes
         -----
         1. Se empieza por definir ``media`` accediendo al ``includes``
-        2. Luego se crea un conjunto donde `zipeamos` los datos mas relevantes de cada tweet en el thread, para poder
+        2. Luego se crea un conjunto donde `zipeamos` los datos mas relevantes de cada tweet en el chat, para poder
         procesarlos por separado en ``merge_tweet_data``
         3. Procesamos cada item del conjunto haciendo `map`
         4. Definimos el ``token`` accediendo al ``meta``
@@ -271,8 +271,8 @@ class Fetcher:
         heads = {'Authorization': f'Bearer { env("BEARER_TOKEN") }'}
         return requests.get(url, params=payload, headers=heads).json()
 
-    def custom_request_thread(self, payload):
-        """Trae datos crudos del thread de un tweet de la API, aceptando un payload personalizado.
+    def custom_request_chat(self, payload):
+        """Trae datos crudos del chat de un tweet de la API, aceptando un payload personalizado.
 
         Parameters
         ----------

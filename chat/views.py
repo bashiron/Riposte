@@ -17,7 +17,7 @@ def home(request):
             return process_request(request, form, tw_id)
     else:
         form = LinkForm()
-    return render(request, 'threads/home.html', {'form': form, 'error': ''})
+    return render(request, 'chat/home.html', {'form': form, 'error': ''})
 
 def extract_id(url):
     rx_url = r"^(?:[^\/]*\/){5}([^\/]*)"            #regex para links copiados de la barra de url
@@ -30,7 +30,7 @@ def process_request(request, form, twid):
     root, recent = False, False
     global fetcher
     fetcher = Fetcher(mode)
-    fetcher.set_mocks(sequence(['gen/tweet/t1', 'gen/thread/t2', 'gen/thread/t3', 'gen/thread/t4']))
+    fetcher.set_mocks(sequence(['gen/tweet/t1', 'gen/chat/t2', 'gen/chat/t3', 'gen/chat/t4']))
     res = fetcher.obtain_tweet(twid)
     if mode == R:
         root, recent = eval_link(res, root)
@@ -41,11 +41,11 @@ def process_request(request, form, twid):
         fill_tweet_context(tweet_ctx, res)
         response = HttpResponseRedirect(f'tweet/{twid}')
     if not root and recent:
-        response = render(request, 'threads/home.html', {'form': form, 'error': 'el tweet insertado no es un tweet raiz'})
+        response = render(request, 'chat/home.html', {'form': form, 'error': 'el tweet insertado no es un tweet raiz'})
     if root and not recent:
-        response = render(request, 'threads/home.html', {'form': form, 'error': 'el tweet insertado es mas antiguo que una semana'})
+        response = render(request, 'chat/home.html', {'form': form, 'error': 'el tweet insertado es mas antiguo que una semana'})
     if not (root or recent):
-        response = render(request, 'threads/home.html', {'form': form, 'error': 'el tweet insertado no es un tweet raiz y ademas es mas antiguo que una semana'})
+        response = render(request, 'chat/home.html', {'form': form, 'error': 'el tweet insertado no es un tweet raiz y ademas es mas antiguo que una semana'})
     return response
 
 def eval_link(res, root):
@@ -63,7 +63,7 @@ def is_recent(raw_twt_date):
     return diff.days < 7
 
 def tweet(request, twid):
-    return render(request, 'threads/tweet.html', tweet_ctx)
+    return render(request, 'chat/tweet.html', tweet_ctx)
 
 def fill_tweet_context(ctx, res):
     urls = base_media(res['includes']['media'], res['data']['attachments']['media_keys'])
@@ -83,24 +83,24 @@ def trim_date(date):
 def base_media(media, keys):
     return [m['url'] for m in media if m['type'] == 'photo' and m['media_key'] in keys]
 
-# Ajax - el thread de una respuesta
-def new_thread(request):
+# Ajax - el chat de una respuesta
+def new_chat(request):
     twid = request.GET['twid']
     try:
-        res = fetcher.obtain_thread(twid)
+        res = fetcher.obtain_chat(twid)
     except NoReplies:
         return HttpResponseNotFound(NoReplies.web_name())
     return JsonResponse(res)
 
-# Ajax - mas respuestas en un thread
-def expand_thread(request):
+# Ajax - mas respuestas en un chat
+def expand_chat(request):
     token = request.GET['token']
     twid = request.GET['twid']
-    res = fetcher.obtain_thread(twid, token)
+    res = fetcher.obtain_chat(twid, token)
     return JsonResponse(res)
 
-# Ajax - colapsar niveles de thread
-def collapse_thread(request):
+# Ajax - colapsar niveles de chat
+def collapse_chat(request):
     amount = int(request.GET['num'])
     fetcher.del_userids(amount)
     return HttpResponse(f'<borrados {amount} niveles>')

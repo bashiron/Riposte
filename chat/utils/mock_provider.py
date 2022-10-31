@@ -1,4 +1,4 @@
-from thread_reader.settings import BASE_DIR
+from riposte.settings import BASE_DIR
 from .twitter_requests import Fetcher, R
 from .mention_parser import *
 from .misc import f_put
@@ -19,12 +19,12 @@ def sequence(items):
     return seq
 
 def generate(kind, twid, funs=None):
-    """Trae un tweet o thread de la api y lo almacena en disco, con un procesado opcional de por medio.
+    """Trae un tweet o chat de la api y lo almacena en disco, con un procesado opcional de por medio.
 
     Parameters
     ----------
     kind : `str`
-        String que indica el tipo de dato a conseguir. Posibles valores: `tweet` | `thread`.
+        String que indica el tipo de dato a conseguir. Posibles valores: `tweet` | `chat`.
     twid : `str`
         Id del tweet a conseguir.
     funs : `list`
@@ -54,10 +54,10 @@ def generate(kind, twid, funs=None):
             for fn in funs:
                 fn(kind, res)   # aplicamos la funcion a lo traido de la api
 
-        case 'thread':
-            payload = fetcher.thread_payload(twid)
+        case 'chat':
+            payload = fetcher.chat_payload(twid)
             simplify(payload, kind)
-            res = fetcher.custom_request_thread(payload)
+            res = fetcher.custom_request_chat(payload)
             for fn in funs:
                 fn(kind, res)
 
@@ -79,7 +79,7 @@ def simplify(payload, kind):
             payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
 
-        case 'thread':
+        case 'chat':
             payload['tweet.fields'] = payload['tweet.fields'].replace(',attachments', '')
             payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
@@ -106,7 +106,7 @@ def remove_mentions(mode, kind, data):
                 users = data['includes']['users']
                 data['includes']['users'] = [u for u in users if u['id'] != parent_id]
 
-        case 'thread':
+        case 'chat':
             parent_id = data['data'][0]['in_reply_to_user_id']  # todos tienen el mismo parent
             for obj in data['data']:
                 if mode == 'parent':
@@ -119,14 +119,14 @@ def remove_mentions(mode, kind, data):
             users = data['includes']['users']
             data['includes']['users'] = [u for u in users if u['id'] != parent_id]
 
-# Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'thread'
+# Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'chat'
 def insert_pics(kind, data):
     match kind:
         case 'tweet':
             keys, pairs = make_pairs()
             data['data']['attachments'] = {'media_keys': keys}
             data['includes']['media'] = list(map(lambda x: {'media_key': x[1], 'type': 'photo', 'url': x[0]}, pairs))
-        case 'thread':
+        case 'chat':
             media = []
             for obj in data['data']:
                 keys, pairs = make_pairs()
@@ -161,32 +161,32 @@ def keygen(amount):
     return ls
 
 # Devuelve un LIFO de los jsons (en forma dict) con sus datos editados para reflejar los niveles de respuesta
-# TODO: por ahora se construye asumiendo el flujo de siempre expandir la primer respuesta del thread
-# TODO: hacer que en el Fetcher al pedir un thread esas respuestas vengan con los datos de nivel del clickeado
-# TODO: y si se expande un thread (horizontalmente) solo se entrega un thread sin insertar info sobre niveles
-def build_thread(items):
-    tweet, *threads = items
+# TODO: por ahora se construye asumiendo el flujo de siempre expandir la primer respuesta del chat
+# TODO: hacer que en el Fetcher al pedir un chat esas respuestas vengan con los datos de nivel del clickeado
+# TODO: y si se expande un chat (horizontalmente) solo se entrega un chat sin insertar info sobre niveles
+def build_chat(items):
+    tweet, *chats = items
     tweet = load_as_json(tweet)
     que = Queue()
-    for json in [load_as_json(j) for j in threads]:
+    for json in [load_as_json(j) for j in chats]:
         que.put(json)
     levels = [level_data(tweet, 'tweet')]
-    res = linked_thread(levels, que)
+    res = linked_chat(levels, que)
     res.put(tweet)
     return res
 
 # Construye un LIFO de jsons (dicts) donde cada uno tiene añadidos datos de nivel
-def linked_thread(levels, jsons):
+def linked_chat(levels, jsons):
     match jsons.empty():
         case True:
             return LifoQueue()
         case False:
-            thread = jsons.get()    # esto quita un elemento del queue
-            que = linked_thread([level_data(thread)] + levels, jsons)
-            item = insert_level(thread, levels)
+            chat = jsons.get()    # esto quita un elemento del queue
+            que = linked_chat([level_data(chat)] + levels, jsons)
+            item = insert_level(chat, levels)
             return f_put(que, item)
 
-def level_data(json, kind='thread'):
+def level_data(json, kind='chat'):
     match kind:
         case 'tweet':
             obj = json['data']
@@ -198,7 +198,7 @@ def level_data(json, kind='thread'):
                 'twt_id': obj['id']
             }
 
-        case 'thread':
+        case 'chat':
             obj = json['data'][0]   # asumimos que elegiremos el primero porque si
             user = json['includes']['users'][0]  # suponemos orden
             return {
@@ -209,9 +209,9 @@ def level_data(json, kind='thread'):
             }
 
 #
-def insert_level(thread, levels):
+def insert_level(chat, levels):
     last = levels[0]
-    for obj in thread['data']:
+    for obj in chat['data']:
         obj['in_reply_to_user_id'] = last['user_id']
         entities_mention(obj, levels)
         text_mention(obj, levels)
@@ -221,18 +221,18 @@ def insert_level(thread, levels):
         'name': last['user_name'],
         'username': last['user_username']
     }
-    thread['includes']['users'].append(user_obj)
-    return thread
+    chat['includes']['users'].append(user_obj)
+    return chat
 
 # -------- almacenado --------
 
 def load_as_json(name):
-    with open(BASE_DIR / 'threads/json_mocks' / (name + '.json'), encoding='utf-8') as json:
+    with open(BASE_DIR / 'chat/json_mocks' / (name + '.json'), encoding='utf-8') as json:
         ret = json_lib.loads(json.read())
     return ret
 
 def save_as_json(kind, data, name):
-    with open( BASE_DIR / 'threads/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
+    with open( BASE_DIR / 'chat/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
         file.write(json_lib.dumps(data))
 
 

@@ -70,14 +70,14 @@ function setTweetHandlers(tweet) {
 
 /**
  * Setea el handler de click.
- * Solo abre un nuevo thread si el tweet no es el activo, sino lo cierra.
+ * Solo abre un nuevo chat si el tweet no es el activo, sino lo cierra.
  */
 function setClickHandler(tweet) {
     tweet.click(function () {
         if (!$(this).hasClass('active')) {
-            openThread($(this));
+            openChat($(this));
         } else {
-            closeThread($(this));
+            closeChat($(this));
         }
     });
 }
@@ -299,7 +299,7 @@ function navigatePics(element, target, direction) {
  * Carga un nuevo nivel de conversacion.
  * @param  {jQuery} reply la respuesta de la cual cargar la conversacion
  */
-function openThread(reply) {
+function openChat(reply) {
     const fila = reply.parent();
     const nivel = fila.parent();
     const container = nivel.parent();
@@ -308,7 +308,7 @@ function openThread(reply) {
     reply.off('mouseenter mouseleave');    //desactivo el handler de cuando saco el mouse
     getPopup(reply).css('display', 'none'); //oculto el popup del tweet para que no tape
     reply.addClass('active');
-    fila.addClass('locked-thread');
+    fila.addClass('locked-chat');
     fila.children('article').children('.article-metadata').off('mouseenter mouseleave');
     fila.children('article:not(.active)').off('click mouseenter mouseleave');    //desactivo el handler de click para todos los otros tweets
     fila.find('.load-more').off('click')
@@ -353,7 +353,7 @@ function openThread(reply) {
                     html: [new_fila, new_popups]
                 });
                 $('#lv-' + (lvl+1)).replaceWith(new_nivel); //pongo el nuevo nivel en reemplazo del nivel vacio
-                container.append($('<div/>', {  //dejo un nivel vacio para el siguiente openThread
+                container.append($('<div/>', {  //dejo un nivel vacio para el siguiente openChat
                     id: 'lv-' + (lvl+2),
                     'class': 'nivel'
                 }));
@@ -362,7 +362,7 @@ function openThread(reply) {
             error: function (request, status, error) {
                 if (request.responseText == 'NoReplies') {
                     $('#exampleModalCenter').modal('show');
-                    closeThread(reply);
+                    closeChat(reply);
                 };
             },
             complete: function (request, status) {console.log('pedido completado');}
@@ -381,7 +381,7 @@ function extractLevel(nivel) {
  * Cierro un nivel de conversacion, afectando todos los niveles anidados.
  * @param  {jQuery} reply el tweet del cual cerrar conversacion
  */
-function closeThread(reply) {
+function closeChat(reply) {
     const fila = reply.parent();
     const nivel = fila.parent();
     const container = nivel.parent();
@@ -398,7 +398,7 @@ function closeThread(reply) {
         }
     );
     setMouseHandlers(reply);
-    fila.removeClass('locked-thread');
+    fila.removeClass('locked-chat');
     fila.children('article').children('.article-metadata').each(function () {
         setMetadataHandlers($(this));
     });
@@ -409,7 +409,7 @@ function closeThread(reply) {
         moreReplies($(this));
     });
     container.children().slice(lvl+1).remove();   //borro los niveles que vienen delante
-    container.append($('<div/>', {  //dejo un nivel vacio para el siguiente openThread
+    container.append($('<div/>', {  //dejo un nivel vacio para el siguiente openChat
         id: 'lv-' + (lvl+1),
         'class': 'nivel'
     }));
