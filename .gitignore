@@ -161,5 +161,6 @@ cython_debug/
 
 json_mocks/
 prueba.py
-.idea/workspace.xml
-workspace.xml/
+# dolphin directory metadata file
+.directory
+.idea/

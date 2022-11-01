@@ -66,7 +66,7 @@ def tweet(request, twid):
     return render(request, 'chat/tweet.html', tweet_ctx)
 
 def fill_tweet_context(ctx, res):
-    urls = base_media(res['includes']['media'], res['data']['attachments']['media_keys'])
+    urls = base_media(res)
     ctx['name'] = res['includes']['users'][0]['name']
     ctx['username'] = res['includes']['users'][0]['username']
     ctx['text'] = res['data']['text']
@@ -80,7 +80,15 @@ def trim_date(date):
     rx = r".+?(?=T)"
     return re.search(rx, date).group(0)
 
-def base_media(media, keys):
+def base_media(res):
+    try:
+        media = res['includes']['media']
+    except KeyError:
+        media = []
+    try:
+        keys = res['data']['attachments']['media_keys']
+    except KeyError:
+        keys = []
     return [m['url'] for m in media if m['type'] == 'photo' and m['media_key'] in keys]
 
 # Ajax - el chat de una respuesta

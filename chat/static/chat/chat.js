@@ -361,7 +361,7 @@ function openChat(reply) {
             },
             error: function (request, status, error) {
                 if (request.responseText == 'NoReplies') {
-                    $('#exampleModalCenter').modal('show');
+                    $('#error-modal').modal('show');
                     closeChat(reply);
                 };
             },
@@ -435,38 +435,38 @@ function updateSupports(lvl) {
 function showPics() {
     const index = parseInt($("#base-media").attr('data-index'));
     const max = parseInt($("#base-media").attr('data-max'));
-    $(".mySlides").eq(index).css('display', 'block');
-    $(".mySlides").eq(index + max).css('display', 'block');
+    $(".my-slide").eq(index).css('display', 'block');
+    $(".my-slide").eq(index + max).css('display', 'block');
 }
 
 /**
  * Desliza el slideshow hacia la izquierda (sincronizado con el slideshow del modal).
  */
 function slideLeft() {
-    navigatePics($("#base-media"), $("#base-media .mySlides"), 'left');
-    navigatePics($("#sh-modal-media"), $("#sh-modal-media .mySlides"), 'left');
+    navigatePics($("#base-media"), $("#base-media .my-slide"), 'left');
+    navigatePics($("#sh-modal-media"), $("#sh-modal-media .my-slide"), 'left');
 }
 
 /**
  * Desliza el slideshow hacia la derecha (sincronizado con el slideshow del modal).
  */
 function slideRight() {
-    navigatePics($("#base-media"), $("#base-media .mySlides"), 'right');
-    navigatePics($("#sh-modal-media"), $("#sh-modal-media .mySlides"), 'right');
+    navigatePics($("#base-media"), $("#base-media .my-slide"), 'right');
+    navigatePics($("#sh-modal-media"), $("#sh-modal-media .my-slide"), 'right');
 }
 
 /**
  * Abre el modal que contiene las imagenes en su tamaño original.
  */
 function openPicture() {
-    $('#myModal').css('display', 'block');
+    $('#slideshow-modal').css('display', 'block');
 }
 
 /**
  * Cierra el modal.
  */
 function closePicture() {
-    $('#myModal').css('display', 'none');
+    $('#slideshow-modal').css('display', 'none');
 }
 
 $(document).on('keydown', function(ev) {

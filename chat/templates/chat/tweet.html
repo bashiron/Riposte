@@ -13,22 +13,24 @@
                 <div class="base-text">
                     <p>{{ text }}</p>
                 </div>
-                <div id="base-media" data-index="0" data-max="{{ url_count }}">
-                {% for img in urls %}
-                    <div class="mySlides">
-                        <img class="cover" src="{{img}}" onclick="openPicture()" alt="">
+                {% if urls %}
+                    <div id="base-media" data-index="0" data-max="{{ url_count }}">
+                        {% for img in urls %}
+                            <div class="my-slide">
+                                <img class="cover" src="{{img}}" onclick="openPicture()" alt="">
+                            </div>
+                        {% endfor %}                    
+                            <a class="prev" onclick="slideLeft()">❮</a>
+                            <a class="next" onclick="slideRight()">❯</a>
+        
                     </div>
-                {% endfor %}                    
-                    <a class="prev" onclick="slideLeft()">❮</a>
-                    <a class="next" onclick="slideRight()">❯</a>
-
-                </div>
-                <div id="myModal" class="slideshow-modal">
+                {% endif %}
+                <div id="slideshow-modal">
                     <div id="sh-modal-content">
                         <span class="close" onclick="closePicture()">&times;</span>
                         <div id="sh-modal-media" data-index="0" data-max="{{ url_count }}">
                         {% for img in urls %}
-                            <div class="mySlides">
+                            <div class="my-slide">
                                 <img class="contain" src="{{img}}" alt="">
                             </div>
                         {% endfor %}
@@ -53,7 +55,7 @@
             <div class="fila"></div>
         </div>
     </div>
-    <div class="modal error-modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="error-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -63,7 +65,7 @@
               El tweet no tiene respuestas
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary err-close-btn" data-dismiss="modal" onclick="$('#exampleModalCenter').modal('hide');">Cerrar</button>
+              <button type="button" class="btn btn-secondary err-close-btn" data-dismiss="modal" onclick="$('#error-modal').modal('hide');">Cerrar</button>
             </div>
           </div>
         </div>
