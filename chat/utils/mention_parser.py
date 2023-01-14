@@ -97,6 +97,15 @@ def rm_all_mentions(text, mentions):
     return text
 
 def entities_mention(obj, levels):
+    """Insert mentions into the entities of the received tweet object.
+
+    Parameters
+    -----
+    obj : `dict`
+        Tweet object to update.
+    levels : `list` of `dict`
+        Chat levels data.
+    """
     obj['entities'] = {'mentions': []}
     offset = 0
 
@@ -112,6 +121,15 @@ def entities_mention(obj, levels):
         offset += (1 + length + 1)    # +1 for the @ and +1 for the whitespace
 
 def text_mention(obj, levels):
+    """Insert mentions into the text of the received tweet object.
+
+    Parameters
+    -----
+    obj : `dict`
+        Tweet object to update.
+    levels : `list` of `dict`
+        Chat levels data.
+    """
     pos = 0
 
     for lv in levels:
