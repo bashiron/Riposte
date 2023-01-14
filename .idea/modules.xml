@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ThreadReader.iml" filepath="$PROJECT_DIR$/.idea/ThreadReader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Riposte.iml" filepath="$PROJECT_DIR$/.idea/Riposte.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../python_cli_example/.idea/python_cli_example.iml" filepath="$PROJECT_DIR$/../../python_cli_example/.idea/python_cli_example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../youtubePlaylistSavior/.idea/youtubePlaylistSavior.iml" filepath="$PROJECT_DIR$/../youtubePlaylistSavior/.idea/youtubePlaylistSavior.iml" />
     </modules>
   </component>
 </project>

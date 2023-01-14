@@ -164,3 +164,4 @@ prueba.py
 # dolphin directory metadata file
 .directory
 .idea/
+static/

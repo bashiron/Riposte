@@ -1,26 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="32bbfa81-5c56-48e4-9092-37c9b6b85cb3" name="Changes" comment="">
+    <list default="true" id="5ac19036-00bb-46ef-aba4-eaa85d5bef44" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Riposte.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Riposte.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ThreadReader.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thread_reader/settings_copy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/threads/utils/mock_provider.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/mock_provider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/threads/utils/twitter_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/utils/twitter_requests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/threads/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/threads/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/riposte/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/riposte/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../youtubePlaylistSavior/test/mockdb.py" beforeDir="false" afterPath="$PROJECT_DIR$/../youtubePlaylistSavior/test/mockdb.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../youtubePlaylistSavior/test/test_cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/../youtubePlaylistSavior/test/test_cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../youtubePlaylistSavior/test/test_savior.py" beforeDir="false" afterPath="$PROJECT_DIR$/../youtubePlaylistSavior/test/test_savior.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../youtubePlaylistSavior" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2FiXYNaZ3Q3otTnWVv0MbVvmoCr" />
+  <component name="ProjectId" id="2GuMRB4pVPKMqwsaOED9oE2csuF" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -29,25 +48,58 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/bashiron/bashi/projects/ThreadReader&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
+    &quot;last_opened_file_path&quot;: &quot;/home/bashiron/bashi/projects/practice_projects/python_cli&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.runserver">
-    <configuration name="prueba" type="PythonConfigurationType" factoryName="Python">
-      <module name="ThreadReader" />
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior" />
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior/one-timers" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior" />
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior/src/experiments/CLI" />
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior/src/experiments" />
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior/src2/one-timers" />
+      <recent name="$PROJECT_DIR$/../youtubePlaylistSavior/src2" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python tests.Python tests for test_cli.TestCLI.test_setup">
+    <configuration name="cli" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python_cli_example" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../python_cli_example" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../python_cli_example/cli.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="prueba (riposte)" type="PythonConfigurationType" factoryName="Python">
+      <module name="Riposte" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+      <option name="SDK_NAME" value="Python 3.10 (Riposte)" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="threads.prueba" />
+      <option name="SCRIPT_NAME" value="chat.prueba" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -57,14 +109,15 @@
       <method v="2" />
     </configuration>
     <configuration name="runserver" type="PythonConfigurationType" factoryName="Python">
-      <module name="ThreadReader" />
+      <module name="Riposte" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="DJANGO_SETTINGS_MODULE" value="thread_reader.settings" />
+        <env name="DJANGO_SETTINGS_MODULE" value="riposte.settings" />
       </envs>
       <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+      <option name="SDK_NAME" value="Python 3.10 (Riposte)" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -78,19 +131,89 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for test_cli.TestCLI.test_path" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="youtubePlaylistSavior" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../youtubePlaylistSavior/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_cli.TestCLI.test_path&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_cli.TestCLI.test_save_all" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="youtubePlaylistSavior" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../youtubePlaylistSavior/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_cli.TestCLI.test_save_all&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_cli.TestCLI.test_save_some" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="youtubePlaylistSavior" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../youtubePlaylistSavior/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_cli.TestCLI.test_save_some&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_cli.TestCLI.test_setup" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="youtubePlaylistSavior" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../youtubePlaylistSavior/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_cli.TestCLI.test_setup&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Python.prueba (riposte)" />
       <item itemvalue="Python.runserver" />
-      <item itemvalue="Python.prueba" />
+      <item itemvalue="Python.cli" />
+      <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_path" />
+      <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_save_all" />
+      <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_save_some" />
+      <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_setup" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_setup" />
+        <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_path" />
+        <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_save_some" />
+        <item itemvalue="Python.cli" />
+        <item itemvalue="Python tests.Python tests for test_cli.TestCLI.test_save_all" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="32bbfa81-5c56-48e4-9092-37c9b6b85cb3" name="Changes" comment="" />
-      <created>1664975924203</created>
+      <changelist id="5ac19036-00bb-46ef-aba4-eaa85d5bef44" name="Changes" comment="" />
+      <created>1667234004815</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1664975924203</updated>
+      <updated>1667234004815</updated>
     </task>
     <servers />
   </component>
@@ -104,5 +227,41 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../youtubePlaylistSavior/src/experiments/prueba.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../youtubePlaylistSavior/src/one-timers/rawtriever.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../youtubePlaylistSavior/test/test_savior.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../youtubePlaylistSavior/src/experiments/CLI/string_inject.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../youtubePlaylistSavior/src/experiments/CLI/prompt.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../python_cli_example/cli.py</url>
+          <line>24</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

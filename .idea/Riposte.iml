@@ -6,6 +6,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="youtubePlaylistSavior" />
+    <orderEntry type="module" module-name="python_cli_example" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />

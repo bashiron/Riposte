@@ -31,7 +31,7 @@ SECRET_KEY = env("DJANGO_SECRET")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['riposte.one', 'www.riposte.one', '139.144.17.75', 'localhost']
+ALLOWED_HOSTS = ['riposte.one', 'www.riposte.one', '139.144.17.75', 'localhost', '192.168.1.42']
 
 
 # Application definition

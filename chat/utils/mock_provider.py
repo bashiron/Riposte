@@ -2,7 +2,9 @@ from riposte.settings import BASE_DIR
 from .twitter_requests import Fetcher, R
 from .mention_parser import *
 from .misc import f_put
+
 import re
+from collections.abc import Callable
 from time import time
 import json as json_lib
 from random import randint
@@ -18,7 +20,8 @@ def sequence(items):
         seq.append(load_as_json(item))
     return seq
 
-def generate(kind, twid, funs=None):
+
+def generate(kind, twid, funs: list[Callable[[str, dict], None]] = None):
     """Trae un tweet o chat de la api y lo almacena en disco, con un procesado opcional de por medio.
 
     Parameters
@@ -27,7 +30,7 @@ def generate(kind, twid, funs=None):
         String que indica el tipo de dato a conseguir. Posibles valores: `tweet` | `chat`.
     twid : `str`
         Id del tweet a conseguir.
-    funs : `list`
+    funs
         Lista de funciones a aplicar al objeto traido de la api. Estas funciones deben aceptar el parametro kind
         (tipo de dato) y res (objeto de respuesta de la api).
 
@@ -44,7 +47,7 @@ def generate(kind, twid, funs=None):
         funs = []
     fetcher = Fetcher(R)
     res = None
-    filename = re.search(r"^.+?(?=\.)", str(time())).group(0)    # basicamente un numero que no se repite
+    filename = re.search(r"^.+?(?=\.)", str(time())).group(0)  # basicamente un numero que no se repite
 
     match kind:
         case 'tweet':
@@ -52,7 +55,7 @@ def generate(kind, twid, funs=None):
             simplify(payload, kind)
             res = fetcher.custom_request_tweet(twid, payload)
             for fn in funs:
-                fn(kind, res)   # aplicamos la funcion a lo traido de la api
+                fn(kind, res)  # aplicamos la funcion a lo traido de la api
 
         case 'chat':
             payload = fetcher.chat_payload(twid)
@@ -62,6 +65,7 @@ def generate(kind, twid, funs=None):
                 fn(kind, res)
 
     save_as_json(kind, res, filename)
+
 
 def simplify(payload, kind):
     """Simplifica el payload quitando los campos que contienen datos extra.
@@ -83,6 +87,7 @@ def simplify(payload, kind):
             payload['tweet.fields'] = payload['tweet.fields'].replace(',attachments', '')
             payload['expansions'] = payload['expansions'].replace(',attachments.media_keys', '')
             payload.pop('media.fields')
+
 
 # TODO: al borrar las entities se pierden los datos de url que no son menciones
 def remove_mentions(mode, kind, data):
@@ -119,6 +124,7 @@ def remove_mentions(mode, kind, data):
             users = data['includes']['users']
             data['includes']['users'] = [u for u in users if u['id'] != parent_id]
 
+
 # Inserta datos de imagenes en una respuesta json de tipo 'tweet' o 'chat'
 def insert_pics(kind, data):
     match kind:
@@ -135,6 +141,7 @@ def insert_pics(kind, data):
 
             data['includes']['media'] = list(map(lambda x: {'media_key': x[1], 'type': 'photo', 'url': x[0]}, media))
 
+
 # Decide una cantidad entre 1 y 4 y crea los keys y los pares (key, url).
 def make_pairs():
     amount = randint(1, 4)
@@ -143,15 +150,17 @@ def make_pairs():
     pairs = zip(pics, keys)
     return keys, pairs
 
+
 # Devuelve una lista de 'amount' cantidad de imagenes elegidas aleatoriamente de la variable global 'images'.
 # TODO: darle la capacidad de no elegir ninguna imagen
 # TODO: hacer que no use imagenes repetidas
 def choose_pics(amount):
     ls = []
     for _ in range(amount):
-        rand = randint(0, len(images)-1)
+        rand = randint(0, len(images) - 1)
         ls.append(images[rand])
     return ls
+
 
 # Genera una cantidad de 'amount' codigos de 8 digitos.
 def keygen(amount):
@@ -159,6 +168,7 @@ def keygen(amount):
     for _ in range(amount):
         ls.append(str(randint(0, 99999999)).zfill(8))
     return ls
+
 
 # Devuelve un LIFO de los jsons (en forma dict) con sus datos editados para reflejar los niveles de respuesta
 # TODO: por ahora se construye asumiendo el flujo de siempre expandir la primer respuesta del chat
@@ -175,16 +185,18 @@ def build_chat(items):
     res.put(tweet)
     return res
 
+
 # Construye un LIFO de jsons (dicts) donde cada uno tiene añadidos datos de nivel
 def linked_chat(levels, jsons):
     match jsons.empty():
         case True:
             return LifoQueue()
         case False:
-            chat = jsons.get()    # esto quita un elemento del queue
+            chat = jsons.get()  # esto quita un elemento del queue
             que = linked_chat([level_data(chat)] + levels, jsons)
             item = insert_level(chat, levels)
             return f_put(que, item)
+
 
 def level_data(json, kind='chat'):
     match kind:
@@ -199,7 +211,7 @@ def level_data(json, kind='chat'):
             }
 
         case 'chat':
-            obj = json['data'][0]   # asumimos que elegiremos el primero porque si
+            obj = json['data'][0]  # asumimos que elegiremos el primero porque si
             user = json['includes']['users'][0]  # suponemos orden
             return {
                 'user_id': obj['author_id'],
@@ -207,6 +219,7 @@ def level_data(json, kind='chat'):
                 'user_username': user['username'],
                 'twt_id': obj['id']
             }
+
 
 #
 def insert_level(chat, levels):
@@ -224,6 +237,7 @@ def insert_level(chat, levels):
     chat['includes']['users'].append(user_obj)
     return chat
 
+
 # -------- almacenado --------
 
 def load_as_json(name):
@@ -231,8 +245,9 @@ def load_as_json(name):
         ret = json_lib.loads(json.read())
     return ret
 
+
 def save_as_json(kind, data, name):
-    with open( BASE_DIR / 'chat/json_mocks/gen' / kind / ( name + '.json'), 'w') as file:
+    with open(BASE_DIR / 'chat/json_mocks/gen' / kind / (name + '.json'), 'w') as file:
         file.write(json_lib.dumps(data))
 
 
